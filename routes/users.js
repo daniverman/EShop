@@ -1,11 +1,15 @@
 var express = require('express');
 var router = express.Router();
+var db = require('../DButils')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.send('the forst page of /users');
 });
-router.get('/login', function(req, res, next) {
-    res.send('respond with a resource');
+router.post('/login', function(req, res) {
+    var userName = req.query.userName;
+    var password = req.query.password;
+    db.Select
+
 });
 module.exports = router;
