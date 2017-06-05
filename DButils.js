@@ -59,6 +59,7 @@ exports.Select = function(query) {
                 connection.close();
                 resolve(ans);
 
+
             });
             connection.execSql(dbReq);
         });
