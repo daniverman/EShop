@@ -21,12 +21,12 @@ var config = {
 
 var connection;
 
-exports.Select = function(query) {
-    return new Promise(function(resolve,reject) {
+exports.Select = function (query) {
+    return new Promise(function (resolve, reject) {
         connection = new Connection(config);
         var ans = [];
         var properties = [];
-        connection.on('connect', function(err) {
+        connection.on('connect', function (err) {
             if (err) {
                 console.error('error connecting: ' + err.message);
                 reject(err.message);
@@ -47,14 +47,14 @@ exports.Select = function(query) {
             });
             dbReq.on('row', function (row) {
                 var item = {};
-                for (i=0; i<row.length; i++) {
+                for (i = 0; i < row.length; i++) {
                     item[properties[i]] = row[i].value;
                 }
                 ans.push(item);
             });
 
             dbReq.on('requestCompleted', function () {
-                console.log('request Completed: '+ dbReq.rowCount + ' row(s) returned');
+                console.log('request Completed: ' + dbReq.rowCount + ' row(s) returned');
                 console.log(ans);
                 connection.close();
                 resolve(ans);
@@ -66,13 +66,13 @@ exports.Select = function(query) {
     });
 };
 
-exports.Insert =  function insert(query) {
+exports.Insert = function insert(query) {
     connection = new Connection(config);
     connection.on('connect', function (err) {
         if (err) {
             console.log(err);
         } else {
-            request = new Request(query,function (err, rowCount,rows) {
+            request = new Request(query, function (err, rowCount, rows) {
 
             });
             connection.execSql(request);

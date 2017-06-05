@@ -5,52 +5,52 @@ var express = require('express');
 var router = express.Router();
 var db = require('../DButils');
 
-var productJson = {
-    "productId": "",
-    "name": "",
-    "price": "",
-    "amountInInventory": "",
-    "salesNumber": ""
-
-}
-
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    //  res.send("in items main page");
-    var jsAns = {
-        "name": "daniel",
-        "bla": "bla"
-    }
-    res.writeHead(200, {
-        'Content-Type': 'text/json'
-    });
-    res.write(JSON.stringify(f));
-    res.end();
-    //res.json(f);
-    //res.send(JSON.stringify(f));
-
+    res.send("in items main page");
 });
-//return top 5 product that have the most sales
+
+//return top 5 product that have the most sales (not top five from the week as required  )
+//check
 router.get('/HotFive', function (req, res, next) {
     console.log("hj");
     var topFive = [];
-    var ans=[];
+    var ans = [];
     var qurey = "SELECT TOP(5) * FROM user_tb ORDER BY salesNumber";
-    db.Select(qurey);
-    topFive=res.body;
-    for( var i =0 ; i<5 || topFive.length ; i++ ){
-        ans[i].push(JSON.stringify(topFive[i]));
-    }
-    res.writeHead(200 , {
-        'Content-Type' : 'text/json'
-    });
-    res.write(ans);
-    res.end();
+    db.Select(query).then(function (ans) {
+        topFive = ans;
+        for (var i = 0; i < 5 || topFive.length; i++) {
+            topFive[i] = (JSON.stringify(topFive[i]));
+        }
+        res.send(ans);
+    })
+});
 
+//return new items from last month
+//check
+router.get('/newItemsFromLastMonth', function (req, res) {
+    var curDate = new Date();
+    var lastMonth = curDate.getMonth() - 1;
+    var qurey1 = "SELECT * FROM  products WHERE YEAR(AdeedOn) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(AdeedOn) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
 
 
 });
+
+//return all items by some categorey
+router.get('/ItemByCategory', function (req, res) {
+    var category = req.query.category;
+    var maxProductsToReturn = req.query;
+    var qurey = "SELECT TOP('" + maxProductsToReturn + "') * FROM product WHERE category ='" + category + "' AND password ='" + password + "'";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
+});
+
+
 
 
 module.exports = router;
