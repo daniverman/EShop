@@ -41,6 +41,7 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 });
 
 //return all items by some categorey
+//check
 router.get('/ItemByCategory', function (req, res) {
     var category = req.query.category;
     var maxProductsToReturn = req.query;
@@ -50,6 +51,46 @@ router.get('/ItemByCategory', function (req, res) {
     })
 });
 
+
+//get item by ud
+router.get('/ItemById', function (req, res) {
+    var productId  = req.query.productId;
+    var query = "SELECT * FROM product WHERE productId ='" + productId + "'";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
+});
+
+router.get('/ItemByName', function (req, res) {
+    var name  = req.query.name;
+    var query = "SELECT * FROM product WHERE name ='" + name + "'";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
+});
+//sort item by parmater
+router.get('/ItemsSortBy', function (req, res) {
+    var sortBy  = req.query.sortBy;
+    var query = "SELECT * FROM product ORDER BY '" + sortBy + "' DESC";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
+});
+
+router.get('/ItemsSortBy', function (req, res) {
+    var sortBy  = req.query.sortBy;
+    var query = "SELECT * FROM product ORDER BY '" + sortBy + "' DESC";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    })
+});
+
+router.post('/addItemToCart',function (req,res) {
+   var ItemId = req.body.itemId;
+   var userId = req.body.userId;
+
+
+});
 
 
 
