@@ -18,7 +18,7 @@ router.post('/login', function (req, res) {
 
 });
 //add carItd
-//need to check + need to add cookies that remmber the user ->is it from the server or from client
+//checked + need to add cookies that remmber the user ->is it from the server or from client
 router.post('/register', function (req, res) {
     var userName = req.body.userName;
     var firstName = req.body.firstName;
@@ -31,13 +31,17 @@ router.post('/register', function (req, res) {
     var mail = req.body.mail;
     var creditCard = req.body.creditCard;
     var gender = req.body.gender;
-    var lastEntry = "NULL";
-    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + creditCardNumber + "', '" + lastEntry + ")";
+    var lastEntry = req.body.lastEntry;
+    var cartId = req.body.cartId;
+    var categorieId = req.body.categorieId;
+    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "', '" + categorieId + "')";
+    console.log(query);
     db.Insert(query)
 
 
 });
-
+//restore the password
+//checked
 router.post('/login/restorePassword', function (req, res) {
     console.log("ds");
     var userName = req.body.userName;
@@ -48,12 +52,16 @@ router.post('/login/restorePassword', function (req, res) {
 
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND city ='" + city + "'  AND country ='" + country + "' AND phone ='" + phone + "' AND address ='" + address + "'";
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        var pass ={
+            "pass" : ans[0].password
+        }
+        res.send(JSON.stringify(pass));
     })
 
 
 });
 //return last entry
+//checked
 router.get('/LastConnected', function (req, res) {
     var userName = req.query.userName;
     console.log(userName);

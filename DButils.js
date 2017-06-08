@@ -72,7 +72,9 @@ exports.Insert = function insert(query) {
         if (err) {
             console.log(err);
         } else {
-            request = new Request(query, function (err, rowCount, rows) {
+            var request = new Request(query, function (err, rowCount, rows) {
+               console.log(request);
+
 
             });
             connection.execSql(request);
