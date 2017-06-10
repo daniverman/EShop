@@ -20,8 +20,8 @@ router.post('/login', function (req, res) {
 
 
 });
-//add carItd
-//checked + need to add cookies that remmber the user ->is it from the server or from client
+
+//register user , the cookies set in from the client side.
 router.post('/register', function (req, res) {
     var userName = req.body.userName;
     var firstName = req.body.firstName;
@@ -36,7 +36,6 @@ router.post('/register', function (req, res) {
     var gender = req.body.gender;
     var lastEntry = req.body.lastEntry;
     var cartId = req.body.cartId;
-    var categorieId = req.body.categorieId;
     var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "', '" + categorieId + "')";
     console.log(query);
     db.Insert(query)

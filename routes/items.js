@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 });
 
 //return top 5 product that have the most sales (not top five from the week as required  )
-//checked
+//need to check
 router.get('/HotFive', function (req, res, next) {
 
     var query = "SELECT TOP 5 * FROM products ORDER BY salesNumber DESC";
@@ -24,10 +24,10 @@ router.get('/HotFive', function (req, res, next) {
 });
 
 //return new items from last month
-//checked
+//need to check
 router.get('/newItemsFromLastMonth', function (req, res) {
     var curDate = new Date();
-    var month = curDate.getMonth() + 1;
+    var month = curDate.getMonth() - 1;
     var year = curDate.getFullYear();
     var query = "SELECT * FROM products WHERE MONTH(AdeedOn) = " + month + " AND YEAR(AdeedOn) = " + year;
     db.Select(query).then(function (ans) {
@@ -37,6 +37,47 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 
 
 });
+
+//return recommended items for user->go over all the user favorite category and return top 5  items in category
+//need to check
+router.get('/recommendedItemsForUser', function (req, res) {
+    var userName = req.query.userName;
+    var query = "SELECT * FROM user_categories WHERE userName = " + userName;
+    db.Select(query).then(function (ans) {
+        var recAns = [];
+        for (var i = 0; i < ans.rows; i++)
+            query = "SELECT TOP 5 FROM products WHERE category = " + ans[i].categoryId + "  ORDER BY salesNumber DESC";
+        db.Select(qurey).then(function (ans) {
+            recAns.push(ans);
+        })
+
+
+        res.send(JSON.stringify(ans));
+    })
+
+
+});
+
+//set user favorite category
+//need to check
+router.post('/SetFavoriteCategory', function (req, res) {
+    var cat = req.body.category;
+    var user = req.body.userName;
+    var qurey1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = " + user;
+    db.Select(qurey1).then(function (ans) {
+        if (ans.length > 0)
+            res.send("already exist");
+        else {
+            var query2 = "INSERT INTO user_categories VALUES ('" + cat + "', '" + user + "')";
+            db.Insert(query2).then(function (ans) {
+                res.send("ok");
+            })
+        }
+    })
+
+
+});
+
 
 //return all items by some categorey
 //checked
@@ -69,7 +110,6 @@ router.get('/ItemByName', function (req, res) {
         res.send(ans);
     })
 });
-///////////////////////////////////-----------------daniel check in postman the next!!----------------
 //return items sort by parmeter
 //checked
 router.get('/ItemsSortBy', function (req, res) {
@@ -81,18 +121,8 @@ router.get('/ItemsSortBy', function (req, res) {
     })
 });
 
-//return items to user recommended for him
-//not complete
-router.get('/recommendedItems', function (req, res) {
 
-    var query = "";
-    db.Select(query).then(function (ans) {
-        res.send(ans);
-    })
-});
-//cart id is exist kavoaa for each one user 1:1 (cart id is equal to the userName of the user- only his content of the cart will change
-//add item to cart + ned to add what happen if theirs not product in inventory
-//check ->the problem is that i duplicate  key
+//need to check + ned to add what happen if theirs not product in inventory
 router.post('/addItemToCart', function (req, res) {
     var productId = req.body.productId;
     var userName = req.body.userName;
@@ -120,6 +150,7 @@ router.post('/addItemToCart', function (req, res) {
 });
 
 //GelobalPrice will caculated only in this function!! and will not save in DB
+//not working - > userName is not defined
 router.get('/ViewCurrentItemsInWithGelobalPrice', function (req, res) {
 
     var productId = req.query.productId;
@@ -149,6 +180,7 @@ router.get('/ViewCurrentItemsInWithGelobalPrice', function (req, res) {
 
 });
 
+//not working ->query1 is not defined
 
 router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
@@ -167,6 +199,7 @@ router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
 });
 
+//crush -> not such thing cart_tb -> maybe you mean cart?
 router.post('/RemoveItemFromCart', function (req, res) {
 
     var productId = req.body.productId;
@@ -200,8 +233,8 @@ router.post('/RemoveItemFromCart', function (req, res) {
 });
 
 
-//tableorder will contain UserName, Order ID , global price to pay ,typeOfMatbea, date of deliver, and boolean Paid OrNot!!! first date to chose to deliver
-//Delete the current cart of the user
+//tableorder will contain UserName, Order ID , global price to pay ,typeOfMatbea, date of deliver, and boolean Paid OrNot!!! first date to chose to deliver -> built it ;
+//not working -> userName is not defined
 
 router.get('/GetPreviousOrders', function (req, res) {
 
@@ -218,6 +251,7 @@ router.get('/GetPreviousOrders', function (req, res) {
 
 });
 
+//not working ->(node:5772) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 5): ReferenceError: ok is not defined ->ans==ok what ist means?
 router.get('/GetPreviousOrderDetails', function (req, res) {
 
     var OrderId = req.query.OrderId;
@@ -232,7 +266,7 @@ router.get('/GetPreviousOrderDetails', function (req, res) {
     })
 
 });
-
+//working
 router.get('/CheckItemInInvetory', function (req, res) {
 
     var productId = req.query.productId;
@@ -248,9 +282,8 @@ router.get('/CheckItemInInvetory', function (req, res) {
 
 });
 
-//tableorder will contain UserName, Order ID,statusOrder , global price to pay ,typeOfMatbea, date of deliver, and boolean Paid OrNot!!! first date to chose to deliver
-//Delete the current cart of the user
 //the client is wish to get the deliver from the "wishdate" (the law in client is to chosse date from more than week) - and server will take that date
+//crush ->(node:5772) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 7): Invalid object name 'cart_tb'.
 router.post('/CreateNewOrder', function (req, res) {
 
     var userName = req.body.userName;
@@ -296,7 +329,7 @@ router.post('/CreateNewOrder', function (req, res) {
 
 });
 
-
+//not working -> OrderId is not defined
 router.post('/ApproveOrder', function (req, res) {
 
     var statusOrder = "Yes Approved";
@@ -309,6 +342,9 @@ router.post('/ApproveOrder', function (req, res) {
     })
 
 });
+
+
+// not working -> UserName is not defined
 
 router.post('/PayOrder', function (req, res) {
 
