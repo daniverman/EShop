@@ -73,7 +73,45 @@ exports.Insert = function insert(query) {
             console.log(err);
         } else {
             var request = new Request(query, function (err, rowCount, rows) {
-               console.log(request);
+                console.log(request);
+
+
+            });
+            connection.execSql(request);
+
+        }
+    });
+
+
+}
+
+
+exports.Delete = function insert(query) {
+    connection = new Connection(config);
+    connection.on('connect', function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            var request = new Request(query, function (err, rowCount, rows) {
+                console.log(request);
+
+
+            });
+            connection.execSql(request);
+
+        }
+    });
+
+}
+
+exports.Update = function insert(query) {
+    connection = new Connection(config);
+    connection.on('connect', function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            var request = new Request(query, function (err, rowCount, rows) {
+                console.log(request);
 
 
             });
@@ -82,6 +120,4 @@ exports.Insert = function insert(query) {
         }
     });
 }
-
-
 
