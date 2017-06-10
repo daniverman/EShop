@@ -3,15 +3,18 @@ var router = express.Router();
 var db = require('../DButils');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    res.send('the first page of /users');
+    res.send('the first page of users');
 });
 //need to check
 router.post('/login', function (req, res) {
     var userName = req.body.userName;
     var password = req.body.password;
-    var qurey = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";
+    var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if(ans.length==0)
+            res.send("false");
+        else
+            res.send(ans);
     })
 
 
