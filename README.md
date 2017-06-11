@@ -16,7 +16,8 @@ app:
 port=3000
 based on express,
 the app well redirect the request to the  
-routes and he will handele the main request for each sub url by two main urls:items , users and index(the main page)
+routes and he will handele the main request for each sub url by two main urls:items , users and index(the main page) here well be the main work .
+also ww handle the request to the data base by the class DButils like we learn in the lab. 
 
 recomendded users for the test :
 daniverman
