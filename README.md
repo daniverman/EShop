@@ -20,7 +20,7 @@ routes and he will handele the main request for each sub url by two main urls:it
 also ww handle the request to the data base by the class DButils like we learn in the lab. 
 
 recomendded users for the test :
-daniverman
-henkash
+user daniverman pass 123456  
+user henkash pass 123456
 
 
