@@ -1,17 +1,22 @@
-# EShop
+# EShop by daniel and hen
 החנות היא חנות של חולצות.
 כאשר לחולצה יש מידה,צבע,קטגוריה(ספורט , אלגנט ,ארוך קצר , שמלה ) עוד דברים יוספו בעתיד לפי צורך.
 
 
 Azure :
-daniverman@gmail.com
-d159753l
+azure user : daniverman@gmail.com
+azure password : d159753l 
+
+Data Base : 
 admin:daniel
 pass for the admin: Eshop2017
 name of the db = dhshop.database.windows.net;
 
 app:
 port=3000
+based on express,
+the app well redirect the request to the  
+routes and he will handele the main request for each sub url by two main urls:items , users and index(the main page)
 
 recomendded users for the test :
 daniverman
