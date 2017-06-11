@@ -222,7 +222,6 @@ router.get('/ItemsSortBy', function (req, res) {
 });
 
 
-
 //When add to cart - the global amount of the iten in inventory dont changed- only in buy - it will change
 //counsme that amountInInventory is update every week and it has a high amount of per item
 //checked
@@ -230,7 +229,7 @@ router.post('/addItemToCart', function (req, res) {
     var productId = req.body.productId;
     var cartId = req.body.cartId;
     var AmountOfTheSameItem = req.body.AmountOfTheSameItem;
-    if( productId != null){
+    if (productId != null) {
         var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
         db.Select(query2).then(function (ans) {
             var price = ans[0].price;
@@ -239,7 +238,7 @@ router.post('/addItemToCart', function (req, res) {
             // console.log( productId);
             // console.log( AmountOfTheSameItem );
             // console.log( totalSum );
-            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId+ "','" +AmountOfTheSameItem   + "','"+ totalSum + "' )";
+            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + AmountOfTheSameItem + "','" + totalSum + "' )";
             // console.log(query3);
             db.Insert(query3);
             res.send(true);
@@ -248,10 +247,9 @@ router.post('/addItemToCart', function (req, res) {
                 res.send(false);
             })
     }
-    else  {
+    else {
         res.send(false);
     }
-
 
 
 });
@@ -277,7 +275,7 @@ router.get('/ViewCurrentItemsInCartWithGelobalPrice', function (req, res) {
         ans.forEach(add_to_total_cost);
 
         ans.push(JSON.stringify(GelobalPrice_total_cost));
-        res.send(ans );
+        res.send(ans);
 
 
     })
@@ -331,7 +329,7 @@ router.post('/RemoveItemFromCart', function (req, res) {
         else if (CurrentAmountToupdate != 0) {
             var totalSumToUpdate = (price * CurrentAmountToupdate);
             console.log(totalSumToUpdate);
-            query2 = "UPDATE cart SET AmountOfTheSameItem = '" + CurrentAmountToupdate + "', totalSum = '" + totalSumToUpdate + "'" + " WHERE cartId = '" + cartId + "' AND productId = '" + productId+"'";
+            query2 = "UPDATE cart SET AmountOfTheSameItem = '" + CurrentAmountToupdate + "', totalSum = '" + totalSumToUpdate + "'" + " WHERE cartId = '" + cartId + "' AND productId = '" + productId + "'";
             console.log(query2);
             db.Insert(query2);
             res.send(true);
@@ -362,14 +360,14 @@ router.get('/GetPreviousOrderDetails', function (req, res) {
 //return in the last cell the amount of the prev orders
     var orderId = req.query.orderId;
     var userName = req.query.userName;
-    var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "' AND userName='"+userName+"'";
+    var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "' AND userName='" + userName + "'";
     db.Select(query).then(function (ans) {
         //check if this order exist
         if (ans.length > 0) {
             ans.push(ans.length);
             res.send(ans);
         }
-        else  {
+        else {
             res.send(false);
         }
 
@@ -384,11 +382,11 @@ router.get('/GetAmountOfItemInInvetory', function (req, res) {
     db.Select(query).then(function (ans) {
 
         if (ans.length > 0) {
-            var ans1=ans[0].amountInInventory;
+            var ans1 = ans[0].amountInInventory;
             ans.push(ans1);
             res.send(ans);
         }
-        else  {
+        else {
             res.send(false);
         }
 
@@ -401,10 +399,10 @@ router.get('/GetAmountOfItemInInvetory', function (req, res) {
 router.post('/CreateNewOrder', function (req, res) {
 
     var userName = req.body.userName;
-    var orderId = req.body.NumofPrevOrders+1;
+    var orderId = req.body.NumofPrevOrders + 1;
     var statusOrder = "Not Approved";
     var TypeOfMatbea = req.body.TypeOfMatbea;
-    var GelobalPrice_total_cost =req.body.GelobalPrice_total_cost;
+    var GelobalPrice_total_cost = req.body.GelobalPrice_total_cost;
     var dateOfDeliver = req.body.dateOfDeliver;
     var PaidOrder = false;
 
@@ -420,87 +418,110 @@ router.post('/ApproveOrder', function (req, res) {
     var statusOrder = "Yes Approved";
     var orderId = req.body.orderId;
     var userName = req.body.userName;
-    var query = "UPDATE order_tb SET statusOrder = '" +statusOrder  + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName+"'";
+    var query = "UPDATE order_tb SET statusOrder = '" + statusOrder + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName + "'";
     db.Update(query);
     res.send(true);
 
 });
 
+
 //update the amount of the item in the inventory !!!!!!!
-router.post('/PayOrder', function (req, res) {
-
-    var orderId = req.body.orderId;
-    var userName = req.body.userName;
-    var PaidOrder = false;
-    var query = "SELECT * FROM order_tb WHERE userName = '" + userName + "' AND orderId =  '" + orderId + "'";
+//checked
+router.get('/PayOrder/CheckEnoughAmountInInventory', function (req, res) {
+//return in the last cell the amount which left in inventory after the buy
+    var cartId = req.query.cartId;
+    var productId = req.query.productId;
+    var currentAmountItemInCart = 0;
+    var query = "SELECT * FROM cart WHERE cartId  = '" + cartId + "' AND productId =  '" + productId + "'";
     db.Select(query).then(function (ans) {
-        if (ans[0].statusOrder == "Yes Approved") {
-            var PaidOrNot = true;
-            var cartId = ans[0].cartId;
+        if (ans.length != 0) {
+            currentAmountItemInCart = ans[0].AmountOfTheSameItem;
+            console.log(currentAmountItemInCart);
+        } else {
+            res.send(false);
+        }
+    }).then(function (ans) {
 
-            var AmountOftheSameItem = ans[0].AmountOftheSameItem;
-            var totalSum = ans[0].totalSum;
-            var TypeOfMatbea = ans[0].TypeOfMatbea;
-            var productId = ans[0].productId;
+        var query1 = "SELECT * FROM products WHERE productId  = '" + productId + "'";
+        db.Select(query1).then(function (ans) {
+            var amountInInventory = ans[0].amountInInventory;
+            console.log(query1);
+            if (currentAmountItemInCart <= amountInInventory) {
+                //    console.log(amountInInventory-currentAmountItemInCart);
+                var leftInInv = amountInInventory - currentAmountItemInCart;
+                ans.push(leftInInv)
+                res.send(ans);
+            }
+            else {
+                res.send(false);
+            }
 
-            //add a part of copy of reshomot of the current cart of the user to the table "specification of items&amount In Order that pay"
-            var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
-            db.Select(query1).then(function (ans) {
-
-                function copy_each_row_to_specificationOrderTable(row) {
-                    var query2 = "INSERT INTO spcificationOrder_tb VALUES('" + orderId + "','" + userName + "','" + productId + "','" + totalSum + "','" + TypeOfMatbea + "','" + AmountOftheSameItem + "')";
-                    db.Insert(query2);
-                }
-
-                ans.forEach(copy_each_row_to_specificationOrderTable);
-                var query3 = "UPDATE  order_tb SET  PaidOrNot  = '" + PaidOrNot + "' WHERE orderId = '" + orderId + "' AND userName ='" + userName + "'";
-                db.Update(query3).then(function (ans) {
-                    //check that the order exist- else false return
-                    //buy with remote system of creditcard of the user that in the system( from once he registered)
-                    var query4 = "DELETE FROM cart WHERE  cartId = '" + cartId + "'";
-                    console.log(query4);
-                    db.Delete(query4).then(updateInventoryAfterBuy(orderId, userName)).then(function (ans) {
-                        res.send("The Order Was Payed Succesfully");
-                    })
-
-                })
+        })
+            .catch(function (ans) {
+                res.send(false);
             })
-                .catch(function (ans) {
-                    res.send(false);
-                })
-        }
-        else {
-            res.send("false:You should to approve the order before you pay");
-        }
-
-
     })
 
 });
 
-function updateInventoryAfterBuy(orderId, userName) {
 
-    //add a part of copy of reshomot of the current cart of the user to the table "specification of items&amount In Order that pay"
-    var query1 = "SELECT * FROM spcificationOrder_tb WHERE orderId = '" + orderId + "' AND userName= '" + userName + "'";
-    db.Select(query1).then(function (ans) {
+//update the amount of the item in the inventory !!!!!!!
+router.post('/PayOrder/UpdatetheCurrectAmountInInventory', function (req, res) {
 
-        function copy_each_row_to_specificationOrderTable(product) {
-            var productId = product.productId;
-            var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
-            db.Select(query2).then(function (ans) {
-                //we do not care if will be hosarim- the inventory will care about to fill them
-                var amountInInventoryUpdate = ans.amountInInventory - product.AmountOftheSameItem;
-                var query3 = "UPDATE  products SET  amountInInventory  = '" + amountInInventoryUpdate + "' WHERE productId = '" + productId + "'";
-                db.Update(query3);
-            })
+    var productId = req.body.productId;
+    var leftInInv = req.body.leftInInv;
+    if (productId != null & leftInInv != null) {
+        var query = "UPDATE products SET amountInInventory = '" + leftInInv + "'  WHERE productId = '" + productId + "'";
+        db.Insert(query);
+        res.send(true);
+    }
+    else {
+        res.send(false);
+    }
 
-            ans.forEach(copy_each_row_to_specificationOrderTable);
-        }
-    })
-        .catch(function (ans) {
-            res.send(false);
-        })
-}
+});
+
+
+//view cart will before this func && price relevant of product
+//update the amount of the item in the inventory !!!!!!!
+router.post('/PayOrder/AddNewSpecificationOrderAndPay', function (req, res) {
+
+    var orderId = req.body.orderId;
+    var userName = req.body.userName;
+    var productId = req.body.productId;
+    var amount = req.body.amount;
+    var totalSum = req.body.totalSum;
+    var price = req.body.price;
+    var TypeOfMatbea = req.body.TypeOfMatbea;
+
+    var cartId = userName;
+    var query2 = "INSERT INTO spcificationOrder_tb VALUES('" + orderId + "','" + userName + "','" + productId + "','" + amount + "','" + totalSum + "','" + TypeOfMatbea + "','" + price + "')";
+    db.Insert(query2);
+    console.log(query2);
+
+});
+
+
+router.post('/PayOrder/PayCart', function (req, res) {
+
+    var orderId = req.body.orderId;
+    var userName = req.body.userName;
+    var tr = 1;
+    var query = "UPDATE order_tb SET PaidOrNot = '" + tr + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName + "'";
+    db.Insert(query);
+    res.send(true);
+});
+
+router.post('/PayOrder/DeleteCart', function (req, res) {
+
+    var userName = req.body.userName;
+
+    var query2 = "DELETE FROM cart WHERE cartId = '" + userName + "'";
+    db.Delete(query2);
+    res.send("The Order Was Payed Succesfully");
+});
+
+module.exports = router;
 
 
 module.exports = router;
