@@ -77,7 +77,7 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 //checked
 router.get('/recommendedItemsForUser/GetUserCategories', function (req, res) {
 
-   // var recAns = [];
+    // var recAns = [];
     var userName = req.query.userName;
     console.log(userName);
     var query1 = "SELECT * FROM user_categories WHERE userName = '" + userName + "'";
@@ -92,7 +92,7 @@ router.get('/recommendedItemsForUser/GetUserCategories', function (req, res) {
         }
     })
         .catch(function (ans) {
-        res.send(false);
+            res.send(false);
         })
 
 
@@ -104,7 +104,7 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
     var userName = req.query.userName;
     var categoryId = req.query.categoryId;
     console.log(userName);
-    var query= "SELECT TOP 5 * FROM products WHERE categoryId = " + categoryId + "  ORDER BY salesNumber DESC";
+    var query = "SELECT TOP 5 * FROM products WHERE categoryId = " + categoryId + "  ORDER BY salesNumber DESC";
     console.log(query);
     db.Select(query).then(function (ans) {
 
@@ -124,33 +124,33 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
 
 
 //check if the category and user already exist
- //need to check
+//need to check
 router.get('/SetFavoriteCategory/CheckExistCategoryId', function (req, res) {
     var cat = req.query.categoryId;
     var user = req.query.userName;
-    var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user+"'";
+    var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user + "'";
     console.log(query1);
     db.Select(query1).then(function (ans) {
         console.log("anf");
         if (ans.length > 0)
             res.send("True");
         else {
-             res.send("False  ");
-            }
-        })
+            res.send("False  ");
+        }
+    })
 
 });
 
 router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
     var cat = req.body.categoryId;
     var user = req.body.userName;
-    if(cat!=null & user!=null){
+    if (cat != null & user != null) {
         var query = "INSERT INTO user_categories VALUES ('" + cat + "','" + user + "')";
         console.log(query);
         db.Insert(query);
         res.send(true)
     }
-    else{
+    else {
         res.send(false);
     }
 
@@ -260,7 +260,7 @@ router.post('/addItemToCart', function (req, res) {
 //GelobalPrice will caculated only in this function!! and will not save in DB
 //checked
 router.get('/ViewCurrentItemsInCartWithGelobalPrice', function (req, res) {
-
+//return in the last cell of ans the global price
     var cartId = req.query.cartId;
 
     var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
@@ -304,57 +304,44 @@ router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
     })
 
 });
-
-//check that
+//to check
 router.post('/RemoveItemFromCart', function (req, res) {
 
     var productId = req.body.productId;
     var cartId = req.body.cartId;
     var AmountToRemoveOfTheSameItem = req.body.AmountToRemoveOfTheSameItem;
-    var AmountOfItemInDB = 0;
     var query = "SELECT * FROM cart WHERE cartId = '" + cartId + "' AND productId ='" + productId + "'";
-    console.log(query );
+    console.log(query);
     db.Select(query).then(function (ans) {
 
         var AmountOfItemInDB = ans[0].AmountOfTheSameItem;
-        console.log(AmountOfItemInDB );
-        var totalSum=ans[0].totalSum;
-        var price = (ans[0].totalSum)/(ans[0]. AmountOfTheSameItem);
-        console.log(price );
-        var CurrentAmountToupdate = ans[0].AmountOfTheSameItem - AmountToRemoveOfTheSameItem;
+        console.log(" AmountOfItemInDB : " + AmountOfItemInDB);
+        var totalSum = ans[0].totalSum;
+        var price = totalSum / AmountOfItemInDB;
+        console.log(" price : " + price);
+        var CurrentAmountToupdate = AmountOfItemInDB - AmountToRemoveOfTheSameItem;
         console.log(CurrentAmountToupdate);
-        if (CurrentAmountToupdate== 0) {
-            console.log("gfgfg" );
+        if (CurrentAmountToupdate == 0) {
+            console.log("gfgfg");
             var query2 = "DELETE FROM cart WHERE  cartId = '" + cartId + "' AND productId ='" + productId + "'";
             db.Delete(query2).then(function (ans) {
                 res.send(ans);
             })
-
         }
         else if (CurrentAmountToupdate != 0) {
-            var totalSumToUpdate = (price *CurrentAmountToupdate);
-            console.log(totalSumToUpdate  );
-            var query2 = "DELETE FROM cart WHERE  cartId ='" +cartId+ "' AND productId ='" + productId + "'";
+            var totalSumToUpdate = (price * CurrentAmountToupdate);
+            console.log(totalSumToUpdate);
+            query2 = "UPDATE cart SET AmountOfTheSameItem = '" + CurrentAmountToupdate + "', totalSum = '" + totalSumToUpdate + "'" + " WHERE cartId = '" + cartId + "' AND productId = '" + productId+"'";
             console.log(query2);
-            db.Delete(query2);
-            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + CurrentAmountToupdate + "','" + totalSumToUpdate + "' )";
-            console.log(query3);
-            console.log(true);
-            db.Insert(query3);
-
-            console.log(true);
+            db.Insert(query2);
             res.send(true);
 
         }
 
     })
-        .catch(function (ans) {
-            res.send(false);
-        })
-
 });
 
-
+//checked
 router.get('/GetPreviousOrders', function (req, res) {
 
     var userName = req.query.userName;
@@ -370,101 +357,72 @@ router.get('/GetPreviousOrders', function (req, res) {
 
 });
 
-
+//check again
 router.get('/GetPreviousOrderDetails', function (req, res) {
-
+//return in the last cell the amount of the prev orders
     var orderId = req.query.orderId;
-    var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "'";
+    var userName = req.query.userName;
+    var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "' AND userName='"+userName+"'";
     db.Select(query).then(function (ans) {
         //check if this order exist
         if (ans.length > 0) {
+            ans.push(ans.length);
             res.send(ans);
         }
-        else    res.send(false);
+        else  {
+            res.send(false);
+        }
 
     })
 
 });
-
-router.get('/CheckItemInInvetory', function (req, res) {
-
+//checked
+router.get('/GetAmountOfItemInInvetory', function (req, res) {
+//return in the last cell the amount of the item
     var productId = req.query.productId;
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
-        //check if this order exist
+
         if (ans.length > 0) {
+            var ans1=ans[0].amountInInventory;
+            ans.push(ans1);
             res.send(ans);
         }
-        else    res.send(false);
+        else  {
+            res.send(false);
+        }
 
     })
 
 });
 
 //the law in client side: is to chose date from more than week in the side clinet from the current day today - and server will take that date
+//checked
 router.post('/CreateNewOrder', function (req, res) {
 
     var userName = req.body.userName;
-    var orderId = 0;
+    var orderId = req.body.NumofPrevOrders+1;
     var statusOrder = "Not Approved";
     var TypeOfMatbea = req.body.TypeOfMatbea;
-    var GelobalPrice_total_cost = 0;
-    var firstDateToChoseToDeliver = req.body.firstDateToChoseToDeliver;
+    var GelobalPrice_total_cost =req.body.GelobalPrice_total_cost;
+    var dateOfDeliver = req.body.dateOfDeliver;
     var PaidOrder = false;
-    var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
-    db.Select(query).then(function (ans) {
-        var cartId = ans[0].cartId;
-        var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
-        db.Select(query1).then(function (ans) {
-            console.log(query1);
-            var totalSum = 0;
 
-            function add_to_total_cost(item) {
-                GelobalPrice_total_cost += item.totalSum;
-            }
-
-            ans.forEach(add_to_total_cost);
-
-            console.log(total_cost);
-            var NumOfPrevOrders = 0;
-
-            //get num of prev orders
-            var query2 = "SELECT * FROM order_tb WHERE userName = '" + UserName + "'";
-            db.Select(query2).then(function (ans) {
-
-                if (ans.length() != null) {
-                    NumOfPrevOrders = ans.length();
-                }
-                orderId = NumOfPrevOrders + 1;
-                var query3 = "INSERT INTO order_tb VALUES('" + userName + "','" + orderId + "','" + TypeOfMatbea + "','" + GelobalPrice_total_cost + "','" + PaidOrder + "','" + statusOrder + "','" + wishTodeliverDate + "')";
-                db.Insert(query3).then(function (ans) {
-                    res.send(ans);
-
-                })
-            })
-        })
-    })
-        .catch(function (ans) {
-            res.send(false);
-        })
+    var query3 = "INSERT INTO order_tb VALUES('" + userName + "','" + orderId + "','" + TypeOfMatbea + "','" + GelobalPrice_total_cost + "','" + PaidOrder + "','" + statusOrder + "','" + dateOfDeliver + "')";
+    console.log(query3);
+    db.Insert(query3);
+    res.send(true);
 
 });
-
+//checked
 router.post('/ApproveOrder', function (req, res) {
 
     var statusOrder = "Yes Approved";
     var orderId = req.body.orderId;
     var userName = req.body.userName;
-    var query = "UPDATE  order_tb SET  statusOrder = '" + statusOrder + "' WHERE orderId = '" + orderId + "' AND userName ='" + userName + "'";
-    db.Update(query).then(function (ans) {
-        if (ans.length > 0) {
-            res.send(ans);
-        }
-        else {
-            res.send(false);
-        }
-
-    })
+    var query = "UPDATE order_tb SET statusOrder = '" +statusOrder  + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName+"'";
+    db.Update(query);
+    res.send(true);
 
 });
 

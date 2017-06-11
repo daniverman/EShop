@@ -86,7 +86,7 @@ exports.Insert = function insert(query) {
 }
 
 
-exports.Delete = function insert(query) {
+exports.Delete = function (query) {
     connection = new Connection(config);
     connection.on('connect', function (err) {
         if (err) {
