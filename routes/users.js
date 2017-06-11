@@ -5,12 +5,14 @@ var db = require('../DButils');
 router.get('/', function (req, res, next) {
     res.send('the first page of users');
 });
-//need to check
+//checked
 router.post('/login', function (req, res) {
     var userName = req.body.userName;
     var password = req.body.password;
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";
+    console.log(query);
     db.Select(query).then(function (ans) {
+        console.log(ans);
         if (ans.length == 0)
             res.send(false);
         else
@@ -20,7 +22,7 @@ router.post('/login', function (req, res) {
 
 });
 
-//register user , the cookies set in from the client side.
+//checked
 router.post('/register', function (req, res) {
     var userName = req.body.userName;
     var firstName = req.body.firstName;
@@ -35,15 +37,25 @@ router.post('/register', function (req, res) {
     var gender = req.body.gender;
     var lastEntry = req.body.lastEntry;
     var cartId = req.body.cartId;
-    var categoryId = req.body.categoryId;
-    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "', '" + categoryId + "')";
-    console.log(query);
-    if (userName != null & firstName != null & lastName != null & password != null & address != null & city != null & country != null & phone != null & mail != null & creditCard != null & gender != null & lastEntry != null & cartId != null & categoryId != null) {
-        db.Insert(query)
-    }
-    else {
-        res.send(false);
-    }
+    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "')";
+    var query2 = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
+    console.log(query2);
+    db.Select(query2).then(function (ans) {
+        if (ans.length > 0) {
+            res.send("userName Exist");
+        }
+        else {
+            console.log(query);
+            if (userName != null & firstName != null & lastName != null & password != null & address != null & city != null & country != null & phone != null & mail != null & creditCard != null & gender != null & lastEntry != null & cartId != null) {
+                db.Insert(query);
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        }
+
+    })
 
 
 });

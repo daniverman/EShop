@@ -9,10 +9,32 @@ router.get('/', function (req, res, next) {
 });
 
 //return top 5 product that have the most sales (not top five from the week as required  )
-//need to check
+//checked
 router.get('/HotFive', function (req, res, next) {
 
-    var query = "SELECT TOP 5 * FROM products ORDER BY salesNumber DESC";
+    var today = new Date();
+    var weekAgo = new Date();
+    var day = today.getDate();
+    var month = today.getMonth() + 1; //January is 0!
+    var year = today.getFullYear();
+
+
+    console.log("day" + day + "month" + month + "year" + year);
+
+    console.log(today);
+
+
+    if (day < 7) {
+        weekAgo = new Date(year, month - 1, 30 - day);
+
+    }
+    else {
+        weekAgo = new Date(year, month, day - 7);
+    }
+    console.log(weekAgo);
+
+    var query = "SELECT TOP 5 * FROM products  WHERE MONTH(AdeedOn) >= " + weekAgo.getMonth() + " AND DAY(AdeedOn) >= " + weekAgo.getDate() + " ORDER BY salesNumber DESC";
+    console.log(query);
     db.Select(query).then(function (ans) {
 
         if (ans.length == 0) {
@@ -26,18 +48,20 @@ router.get('/HotFive', function (req, res, next) {
 });
 
 //return new items from last month
-//need to check
+//checked
 router.get('/newItemsFromLastMonth', function (req, res) {
     var curDate = new Date();
-    if (curDate.getMonth() == 01) {
+    var year = curDate.getFullYear();
+    if (curDate.getMonth() == 00) {
+        year -= 1;
         var month = 12;
     }
     else {
-        var month = curDate.getMonth() - 1;
+        var month = curDate.getMonth() ;
     }
-
-    var year = curDate.getFullYear();
-    var query = "SELECT * FROM products WHERE MONTH(AdeedOn) = " + month + " AND YEAR(AdeedOn) = " + year;
+    console.log(month)
+    var query = "SELECT * FROM products WHERE MONTH(AdeedOn) >= " + month + " AND YEAR(AdeedOn) >= " + year;
+    console.log(query);
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
             res.send(false);
@@ -51,14 +75,17 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 });
 
 //return recommended items for user->go over all the user favorite category and return top 5  items in category
-//need to check
 router.get('/recommendedItemsForUser', function (req, res) {
     var userName = req.query.userName;
     var query = "SELECT * FROM user_categories WHERE userName = " + userName;
+    console.log(query);
     db.Select(query).then(function (ans) {
         var recAns = [];
+        console.log(ans);
         for (var i = 0; i < ans.rows; i++)
             query = "SELECT TOP 5 FROM products WHERE category = " + ans[i].categoryId + "  ORDER BY salesNumber DESC";
+            console.log(query);
+
         db.Select(qurey).then(function (ans) {
             recAns.push(ans);
 
