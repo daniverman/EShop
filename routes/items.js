@@ -57,7 +57,7 @@ router.get('/newItemsFromLastMonth', function (req, res) {
         var month = 12;
     }
     else {
-        var month = curDate.getMonth() ;
+        var month = curDate.getMonth();
     }
     console.log(month)
     var query = "SELECT * FROM products WHERE MONTH(AdeedOn) >= " + month + " AND YEAR(AdeedOn) >= " + year;
@@ -75,52 +75,85 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 });
 
 //return recommended items for user->go over all the user favorite category and return top 5  items in category
-router.get('/recommendedItemsForUser', function (req, res) {
+//checked
+router.get('/recommendedItemsForUser/GetUserCategories', function (req, res) {
+
+   // var recAns = [];
     var userName = req.query.userName;
-    var query = "SELECT * FROM user_categories WHERE userName = " + userName;
-    console.log(query);
-    db.Select(query).then(function (ans) {
-        var recAns = [];
-        console.log(ans);
-        for (var i = 0; i < ans.rows; i++)
-            query = "SELECT TOP 5 FROM products WHERE category = " + ans[i].categoryId + "  ORDER BY salesNumber DESC";
-            console.log(query);
+    console.log(userName);
+    var query1 = "SELECT * FROM user_categories WHERE userName = '" + userName + "'";
+    console.log(query1);
+    db.Select(query1).then(function (ans) {
 
-        db.Select(qurey).then(function (ans) {
-            recAns.push(ans);
-
-
-            if (ans.length == 0) {
-                res.send(false);
-            }
-            else {
-                res.send(JSON.stringify(ans));
-            }
-
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
+    })
+        .catch(function (ans) {
+        res.send(false);
         })
 
+
+});
+//checked
+router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', function (req, res) {
+
+
+    var userName = req.query.userName;
+    var categoryId = req.query.categoryId;
+    console.log(userName);
+    var query= "SELECT TOP 5 * FROM products WHERE categoryId = " + categoryId + "  ORDER BY salesNumber DESC";
+    console.log(query);
+    db.Select(query).then(function (ans) {
+
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 
 });
 
+
+
 //set user favorite category
 //need to check
-router.post('/SetFavoriteCategory', function (req, res) {
-    var cat = req.body.category;
-    var user = req.body.userName;
-    var qurey1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = " + user;
-    db.Select(qurey1).then(function (ans) {
+router.get('/SetFavoriteCategory/CheckExistcategoryId', function (req, res) {
+    var cat = req.query.categoryId;
+    var user = req.query.userName;
+    var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user+"'";
+    console.log(query1);
+    db.Select(query1).then(function (ans) {
+        console.log("anf");
         if (ans.length > 0)
-            res.send("already exist");
+            res.send("True");
         else {
-            var query2 = "INSERT INTO user_categories VALUES ('" + cat + "', '" + user + "')";
-            db.Insert(query2).then(function (ans) {
-                res.send("ok");
-            })
-        }
+             res.send("False  ");
+            }
+        })
 
-    })
+});
+
+router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
+    var cat = req.body.categoryId;
+    var user = req.body.userName;
+    if(cat!=null & user!=null){
+        var query = "INSERT INTO user_categories VALUES ('" + user + "', '" + cat + "')";
+        console.log(query);
+        db.Insert(query);
+    }
+    else{
+        res.send(false);
+    }
 
 
 });
