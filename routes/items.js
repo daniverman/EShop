@@ -1,6 +1,3 @@
-/**
- * Created by daniel on 02/06/2017.
- */
 var express = require('express');
 var router = express.Router();
 var db = require('../DButils');
@@ -18,8 +15,13 @@ router.get('/HotFive', function (req, res, next) {
     var query = "SELECT TOP 5 * FROM products ORDER BY salesNumber DESC";
     db.Select(query).then(function (ans) {
 
-        //In case their if no five so give what it have- if noting so say that in the server to the client
-        res.send(JSON.stringify(ans));
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(JSON.stringify(ans));
+        }
+
     })
 });
 
@@ -27,12 +29,22 @@ router.get('/HotFive', function (req, res, next) {
 //need to check
 router.get('/newItemsFromLastMonth', function (req, res) {
     var curDate = new Date();
-    var month = curDate.getMonth() - 1;
+    if (curDate.getMonth() == 01) {
+        var month = 12;
+    }
+    else {
+        var month = curDate.getMonth() - 1;
+    }
+
     var year = curDate.getFullYear();
     var query = "SELECT * FROM products WHERE MONTH(AdeedOn) = " + month + " AND YEAR(AdeedOn) = " + year;
     db.Select(query).then(function (ans) {
-        //In case their if no itens fromlast monts so give what it have- if noting so say that in the server to the client
-        res.send(JSON.stringify(ans));
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(JSON.stringify(ans));
+        }
     })
 
 
@@ -49,10 +61,17 @@ router.get('/recommendedItemsForUser', function (req, res) {
             query = "SELECT TOP 5 FROM products WHERE category = " + ans[i].categoryId + "  ORDER BY salesNumber DESC";
         db.Select(qurey).then(function (ans) {
             recAns.push(ans);
+
+
+            if (ans.length == 0) {
+                res.send(false);
+            }
+            else {
+                res.send(JSON.stringify(ans));
+            }
+
         })
 
-
-        res.send(JSON.stringify(ans));
     })
 
 
@@ -73,6 +92,7 @@ router.post('/SetFavoriteCategory', function (req, res) {
                 res.send("ok");
             })
         }
+
     })
 
 
@@ -87,7 +107,14 @@ router.get('/ItemByCategory', function (req, res) {
     var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products WHERE category = " + category + " ";
     console.log(query);
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
+
+
     })
 });
 
@@ -98,7 +125,12 @@ router.get('/ItemById', function (req, res) {
     var productId = req.query.productId;
     var query = "SELECT * FROM products WHERE productId ='" + productId + "'";
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
     })
 });
 //return item by name
@@ -107,27 +139,39 @@ router.get('/ItemByName', function (req, res) {
     var name = req.query.name;
     var query = "SELECT * FROM products WHERE name ='" + name + "'";
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
     })
 });
-//return items sort by parmeter
-//checked
-router.get('/ItemsSortBy', function (req, res) {
-    var sortBy = req.query.sortBy;
+//return items sort by parmeter:Size or Color Only
+//check again!!
+router.get('/ItemsSortBySizeOrColor', function (req, res) {
+    var sortBySizeOrColor = req.query.sortBySizeOrColor;
     var maxProductsToReturn = req.query.maxProductsToReturn;
-    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products ORDER BY '" + sortBy + "'" + " DESC";
+    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products ORDER BY '" + sortBySizeOrColor + "'" + " DESC";
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
     })
 });
 
 
-//need to check + ned to add what happen if theirs not product in inventory
+//When add to cart - the global amount of the iten in inventory dont changed- only in buy - it will change
+//counsue that amountInInventory is update every week and it has a high amount of per item
+//need to check + need to add what happen if theirs not product in inventory
 router.post('/addItemToCart', function (req, res) {
     var productId = req.body.productId;
     var userName = req.body.userName;
-    var TypeOfMatbea = req.body.TypeOfMatbea;
-    var numberOfItems = req.body.AmountOftheSameItem;
+    var typeOfMatbea = req.body.typeOfMatbea;
+    var AmountOfTheSameItem = req.body.AmountOfTheSameItem;
     var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
         var cartId = ans[0].cartId;
@@ -135,29 +179,44 @@ router.post('/addItemToCart', function (req, res) {
         var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
         db.Select(query2).then(function (ans) {
             var price = ans[0].price;
-            var totalSum = price * AmountOftheSameItem;
-            var query3 = "INSERT INTO cart_tb VALUES('" + cartId + "','" + AmountOftheSameItem + "','" + totalSum + "','" + TypeOfMatbea + "','" + productId + "')";
-            console.log(query3);
-            db.Insert(query3);
-            var ans = {ans: true};
+            var amountInInventory = ans[0].amountInInventory;
+            if (AmountOfTheSameItem <= amountInInventory) {
+                var totalSum = price * AmountOftheSameItem;
+                var query3 = "INSERT INTO cart VALUES('" + cartId + "','" + AmountOfTheSameItem + "','" + totalSum + "','" + typeOfMatbea + "','" + productId + "')";
+                console.log(query3);
+                db.Insert(query3);
 
-            res.send(JSON.stringify(ans));
+                if (ans.length == 0) {
+                    res.send(false);
+                }
+                else {
+                    var ans = {ans: true};
+                    res.send(JSON.stringify(ans));
+                }
+
+            }
+            else {
+                res.send("No Amount In Inventory of this Item Or The Product Is not Exist In Inventory ");
+                // res.send(false);
+            }
 
 
         })
     })
-
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
 //GelobalPrice will caculated only in this function!! and will not save in DB
-//not working - > userName is not defined
 router.get('/ViewCurrentItemsInWithGelobalPrice', function (req, res) {
 
     var productId = req.query.productId;
+    var userName = req.query.userName;
     var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
         var cartId = ans[0].cartId;
-        var query1 = "SELECT * FROM cart_tb WHERE cartId = '" + cartId + "'";
+        var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
         db.Select(query1).then(function (ans) {
             console.log(query1);
 
@@ -171,48 +230,56 @@ router.get('/ViewCurrentItemsInWithGelobalPrice', function (req, res) {
             ans.forEach(add_to_total_cost);
 
             console.log(total_cost);
+            if (ans.length == 0) {
+                res.send(false);
+            }
+            else {
+                res.send({ans: GelobalPrice_total_cost});
+            }
 
-            res.send({ans: GelobalPrice_total_cost});
 
         })
     })
-
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 });
-
-//not working ->query1 is not defined
 
 router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
     var userName = req.query.userName;
     var productId = req.query.productId;
-    var AmountToRemove = req.body.AmountOfsameItemToRemove;
 
-    //give me the cart of the user - and the item he choose past- check the amount currectly
-    // - if is the same amount to remove- delete item all from cart
-    // - if it is no all the amound only update the current amount after remove
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'"; //can add check with the cart that the same item is on her
-    db.Select(query1).then(function (ans) {
-        console.log(query1);
-        res.send(ans);
+    db.Select(query).then(function (ans) {
+        console.log(query);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
     })
 
 });
 
-//crush -> not such thing cart_tb -> maybe you mean cart?
+//check that
 router.post('/RemoveItemFromCart', function (req, res) {
-
+    //give me the cart of the user - and the item he choose past- check the amount currectly
+    // - if is the same amount to remove- delete item all from cart
+    // - if it is no all the amound only update the current amount after remove
     var productId = req.body.productId;
     var cartId = req.body.cartId;
     var AmountToRemoveOfTheSameItem = req.body.AmountToRemoveOfTheSameItem;
     var AmountOfItemsInDB = 0;
-    var query = "SELECT * FROM cart_tb WHERE cartId = '" + cartId + "' AND productId ='" + productId + "'";
+    var query = "SELECT * FROM cart WHERE cartId = '" + cartId + "' AND productId ='" + productId + "'";
     db.Select(query).then(function (ans) {
         var AmountOfItemsInDB = ans[0].AmountOftheSameItem;
         var price = ans[0].price;
         var CurrentAmountToupdate = ans[0].AmountOftheSameItem - AmountToRemoveOfTheSameItem;
         if (CurrentAmountToupdate == 0) {
-            var query2 = "DELETE FROM cart_tb WHERE  cartId = '" + cartId + "' AND productId ='" + productId + "'";
+            var query2 = "DELETE FROM cart WHERE  cartId = '" + cartId + "' AND productId ='" + productId + "'";
             db.Delete(query2).then(function (ans) {
                 res.send(ans);
             })
@@ -221,7 +288,7 @@ router.post('/RemoveItemFromCart', function (req, res) {
         else if (CurrentAmountToupdate != 0) {
             var totalSumToUpdate = price * CurrentAmountToupdate;
 
-            var query3 = "UPDATE  cart_tb SET  AmountOftheSameItem = '" + CurrentAmountToupdate + "' AND totalSum ='" + totalSumToUpdate + "' WHERE cartId = '" + cartId + "' AND productId ='" + ItemId + "'";
+            var query3 = "UPDATE  cart SET  AmountOftheSameItem = '" + CurrentAmountToupdate + "' AND totalSum ='" + totalSumToUpdate + "' WHERE cartId = '" + cartId + "' AND productId ='" + ItemId + "'";
             db.Update(query3).then(function (ans) {
                 res.send(ans);
             })
@@ -229,20 +296,19 @@ router.post('/RemoveItemFromCart', function (req, res) {
         }
 
     })
-
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
-
-//tableorder will contain UserName, Order ID , global price to pay ,typeOfMatbea, date of deliver, and boolean Paid OrNot!!! first date to chose to deliver -> built it ;
-//not working -> userName is not defined
 
 router.get('/GetPreviousOrders', function (req, res) {
 
-    var UserName = req.query.UserName;
+    var userName = req.query.userName;
     var query = "SELECT * FROM order_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
-        //check if no orders prev
-        if (ans == ok) {
+
+        if (ans.length > 0) {
             res.send(ans);
         }
         else    res.send(false);
@@ -251,14 +317,14 @@ router.get('/GetPreviousOrders', function (req, res) {
 
 });
 
-//not working ->(node:5772) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 5): ReferenceError: ok is not defined ->ans==ok what ist means?
+
 router.get('/GetPreviousOrderDetails', function (req, res) {
 
-    var OrderId = req.query.OrderId;
-    var query = "SELECT * FROM order_tb WHERE OrderId = '" + OrderId + "'";
+    var orderId = req.query.orderId;
+    var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "'";
     db.Select(query).then(function (ans) {
         //check if this order exist
-        if (ans == ok) {
+        if (ans.length > 0) {
             res.send(ans);
         }
         else    res.send(false);
@@ -266,14 +332,14 @@ router.get('/GetPreviousOrderDetails', function (req, res) {
     })
 
 });
-//working
+
 router.get('/CheckItemInInvetory', function (req, res) {
 
     var productId = req.query.productId;
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
         //check if this order exist
-        if (ans[0] != 0) {
+        if (ans.length > 0) {
             res.send(ans);
         }
         else    res.send(false);
@@ -282,21 +348,20 @@ router.get('/CheckItemInInvetory', function (req, res) {
 
 });
 
-//the client is wish to get the deliver from the "wishdate" (the law in client is to chosse date from more than week) - and server will take that date
-//crush ->(node:5772) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 7): Invalid object name 'cart_tb'.
+//the law in client side: is to chose date from more than week in the side clinet from the current day today - and server will take that date
 router.post('/CreateNewOrder', function (req, res) {
 
     var userName = req.body.userName;
     var orderId = 0;
-    var statusOrder = "Not Aprovved";
+    var statusOrder = "Not Approved";
     var TypeOfMatbea = req.body.TypeOfMatbea;
     var GelobalPrice_total_cost = 0;
-    var wishTodeliverDate = req.body.DateWish;
+    var firstDateToChoseToDeliver = req.body.firstDateToChoseToDeliver;
     var PaidOrder = false;
     var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
         var cartId = ans[0].cartId;
-        var query1 = "SELECT * FROM cart_tb WHERE cartId = '" + cartId + "'";
+        var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
         db.Select(query1).then(function (ans) {
             console.log(query1);
             var totalSum = 0;
@@ -311,7 +376,7 @@ router.post('/CreateNewOrder', function (req, res) {
             var NumOfPrevOrders = 0;
 
             //get num of prev orders
-            var query2 = "SELECT * FROM order_tb WHERE UserName = '" + UserName + "'";
+            var query2 = "SELECT * FROM order_tb WHERE userName = '" + UserName + "'";
             db.Select(query2).then(function (ans) {
 
                 if (ans.length() != null) {
@@ -326,70 +391,72 @@ router.post('/CreateNewOrder', function (req, res) {
             })
         })
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 });
 
-//not working -> OrderId is not defined
 router.post('/ApproveOrder', function (req, res) {
 
     var statusOrder = "Yes Approved";
-    var orderId = req.body.OrderId;
+    var orderId = req.body.orderId;
     var userName = req.body.userName;
-    var query = "UPDATE  order_tb SET  statusOrder = '" + statusOrder + "' WHERE OrderId = '" + OrderId + "' AND userName ='" + userName + "'";
+    var query = "UPDATE  order_tb SET  statusOrder = '" + statusOrder + "' WHERE orderId = '" + orderId + "' AND userName ='" + userName + "'";
     db.Update(query).then(function (ans) {
-        //check that the order exist- else false return
-        res.send(ans);
+        if (ans.length > 0) {
+            res.send(ans);
+        }
+        else {
+            res.send(false);
+        }
+
     })
 
 });
 
-
-// not working -> UserName is not defined
-
+//update the amount of the item in the inventory !!!!!!!
 router.post('/PayOrder', function (req, res) {
 
-
-    var orderId = req.body.OrderId;
+    var orderId = req.body.orderId;
     var userName = req.body.userName;
     var PaidOrder = false;
-    var query = "SELECT * FROM order_tb WHERE UserName = '" + UserName + "' AND OrderId =  '" + orderId + "'";
+    var query = "SELECT * FROM order_tb WHERE userName = '" + userName + "' AND orderId =  '" + orderId + "'";
     db.Select(query).then(function (ans) {
         if (ans[0].statusOrder == "Yes Approved") {
-            var PaidOrder = true;
+            var PaidOrNot = true;
             var cartId = ans[0].cartId;
-            var SOId = ans[0].cartId;
+
             var AmountOftheSameItem = ans[0].AmountOftheSameItem;
             var totalSum = ans[0].totalSum;
             var TypeOfMatbea = ans[0].TypeOfMatbea;
             var productId = ans[0].productId;
 
             //add a part of copy of reshomot of the current cart of the user to the table "specification of items&amount In Order that pay"
-            var query1 = "SELECT * FROM cart_tb WHERE cartId = '" + cartId + "'";
+            var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
             db.Select(query1).then(function (ans) {
 
                 function copy_each_row_to_specificationOrderTable(row) {
-                    var query2 = "INSERT INTO sepecificationOrder_tb VALUES('" + SOId + "','" + AmountOftheSameItem + "','" + totalSum + "','" + TypeOfMatbea + "','" + productId + "')";
+                    var query2 = "INSERT INTO spcificationOrder_tb VALUES('" + orderId + "','" + userName + "','" + productId + "','" + totalSum + "','" + TypeOfMatbea + "','" + AmountOftheSameItem + "')";
                     db.Insert(query2);
                 }
 
                 ans.forEach(copy_each_row_to_specificationOrderTable);
-
-
-                var query3 = "UPDATE  order_tb SET  PaidOrder  = '" + PaidOrder + "' WHERE OrderId = '" + orderId + "' AND userName ='" + userName + "'";
+                var query3 = "UPDATE  order_tb SET  PaidOrNot  = '" + PaidOrNot + "' WHERE orderId = '" + orderId + "' AND userName ='" + userName + "'";
                 db.Update(query3).then(function (ans) {
                     //check that the order exist- else false return
                     //buy with remote system of creditcard of the user that in the system( from once he registered)
-                    var query4 = "DELETE FROM cart_tb WHERE  cartId = '" + cartId + "'";
+                    var query4 = "DELETE FROM cart WHERE  cartId = '" + cartId + "'";
                     console.log(query4);
-                    db.Delete(query4).then(function (ans) {
-                        //the order was payed succesfully
-                        res.send(ans);
-
+                    db.Delete(query4).then(updateInventoryAfterBuy(orderId, userName)).then(function (ans) {
+                        res.send("The Order Was Payed Succesfully");
                     })
-
 
                 })
             })
+                .catch(function (ans) {
+                    res.send(false);
+                })
         }
         else {
             res.send("false:You should to approve the order before you pay");
@@ -399,6 +466,30 @@ router.post('/PayOrder', function (req, res) {
     })
 
 });
+
+function updateInventoryAfterBuy(orderId, userName) {
+
+    //add a part of copy of reshomot of the current cart of the user to the table "specification of items&amount In Order that pay"
+    var query1 = "SELECT * FROM spcificationOrder_tb WHERE orderId = '" + orderId + "' AND userName= '" + userName + "'";
+    db.Select(query1).then(function (ans) {
+
+        function copy_each_row_to_specificationOrderTable(product) {
+            var productId = product.productId;
+            var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
+            db.Select(query2).then(function (ans) {
+                //we do not care if will be hosarim- the inventory will care about to fill them
+                var amountInInventoryUpdate = ans.amountInInventory - product.AmountOftheSameItem;
+                var query3 = "UPDATE  products SET  amountInInventory  = '" + amountInInventoryUpdate + "' WHERE productId = '" + productId + "'";
+                db.Update(query3);
+            })
+
+            ans.forEach(copy_each_row_to_specificationOrderTable);
+        }
+    })
+        .catch(function (ans) {
+            res.send(false);
+        })
+}
 
 
 module.exports = router;

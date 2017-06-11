@@ -11,12 +11,11 @@ router.post('/login', function (req, res) {
     var password = req.body.password;
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";
     db.Select(query).then(function (ans) {
-        if(ans.length==0)
-            res.send("false");
+        if (ans.length == 0)
+            res.send(false);
         else
             res.send(ans);
     })
-
 
 
 });
@@ -36,9 +35,15 @@ router.post('/register', function (req, res) {
     var gender = req.body.gender;
     var lastEntry = req.body.lastEntry;
     var cartId = req.body.cartId;
-    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "', '" + categorieId + "')";
+    var categoryId = req.body.categoryId;
+    var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "', '" + categoryId + "')";
     console.log(query);
-    db.Insert(query)
+    if (userName != null & firstName != null & lastName != null & password != null & address != null & city != null & country != null & phone != null & mail != null & creditCard != null & gender != null & lastEntry != null & cartId != null & categoryId != null) {
+        db.Insert(query)
+    }
+    else {
+        res.send(false);
+    }
 
 
 });
@@ -54,10 +59,16 @@ router.post('/login/restorePassword', function (req, res) {
 
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND city ='" + city + "'  AND country ='" + country + "' AND phone ='" + phone + "' AND address ='" + address + "'";
     db.Select(query).then(function (ans) {
-        var pass ={
-            "pass" : ans[0].password
+        if (ans.length == 0) {
+            res.send(false);
         }
-        res.send(JSON.stringify(pass));
+        else {
+            var pass = {
+                "pass": ans[0].password
+            }
+            res.send(JSON.stringify(pass));
+        }
+
     })
 
 
@@ -70,13 +81,16 @@ router.get('/LastConnected', function (req, res) {
     var query = "SELECT lastEntry FROM user_tb WHERE userName ='" + userName + "'";
     console.log(query);
     db.Select(query).then(function (ans) {
-        res.send(ans);
+        if (ans.length == 0) {
+            res.send(false);
+        }
+        else {
+            res.send(ans);
+        }
+
 
     })
 });
-
-
-
 
 
 module.exports = router;
