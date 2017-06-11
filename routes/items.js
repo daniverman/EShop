@@ -74,7 +74,6 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 
 });
 
-//return recommended items for user->go over all the user favorite category and return top 5  items in category
 //checked
 router.get('/recommendedItemsForUser/GetUserCategories', function (req, res) {
 
@@ -124,10 +123,9 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
 });
 
 
-
-//set user favorite category
-//need to check
-router.get('/SetFavoriteCategory/CheckExistcategoryId', function (req, res) {
+//check if the category and user already exist
+ //need to check
+router.get('/SetFavoriteCategory/CheckExistCategoryId', function (req, res) {
     var cat = req.query.categoryId;
     var user = req.query.userName;
     var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user+"'";
@@ -147,9 +145,10 @@ router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
     var cat = req.body.categoryId;
     var user = req.body.userName;
     if(cat!=null & user!=null){
-        var query = "INSERT INTO user_categories VALUES ('" + user + "', '" + cat + "')";
+        var query = "INSERT INTO user_categories VALUES ('" + cat + "','" + user + "')";
         console.log(query);
         db.Insert(query);
+        res.send(true)
     }
     else{
         res.send(false);
@@ -164,7 +163,7 @@ router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
 router.get('/ItemByCategory', function (req, res) {
     var category = req.query.category;
     var maxProductsToReturn = req.query.maxProductsToReturn;
-    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products WHERE category = " + category + " ";
+    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products WHERE categoryId = " + category + " ";
     console.log(query);
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
@@ -207,12 +206,11 @@ router.get('/ItemByName', function (req, res) {
         }
     })
 });
-//return items sort by parmeter:Size or Color Only
-//check again!!
-router.get('/ItemsSortBySizeOrColor', function (req, res) {
-    var sortBySizeOrColor = req.query.sortBySizeOrColor;
+//return items sort by parmeter:Size or added date
+router.get('/ItemsSortBy', function (req, res) {
+    var parm = req.query.parm;
     var maxProductsToReturn = req.query.maxProductsToReturn;
-    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products ORDER BY '" + sortBySizeOrColor + "'" + " DESC";
+    var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products ORDER BY '" + parm + "'" + " DESC";
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
             res.send(false);
@@ -224,94 +222,77 @@ router.get('/ItemsSortBySizeOrColor', function (req, res) {
 });
 
 
+
 //When add to cart - the global amount of the iten in inventory dont changed- only in buy - it will change
-//counsue that amountInInventory is update every week and it has a high amount of per item
-//need to check + need to add what happen if theirs not product in inventory
+//counsme that amountInInventory is update every week and it has a high amount of per item
+//checked
 router.post('/addItemToCart', function (req, res) {
     var productId = req.body.productId;
-    var userName = req.body.userName;
-    var typeOfMatbea = req.body.typeOfMatbea;
+    var cartId = req.body.cartId;
     var AmountOfTheSameItem = req.body.AmountOfTheSameItem;
-    var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
-    db.Select(query).then(function (ans) {
-        var cartId = ans[0].cartId;
-        console.log(cartId);
+    if( productId != null){
         var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
         db.Select(query2).then(function (ans) {
             var price = ans[0].price;
-            var amountInInventory = ans[0].amountInInventory;
-            if (AmountOfTheSameItem <= amountInInventory) {
-                var totalSum = price * AmountOftheSameItem;
-                var query3 = "INSERT INTO cart VALUES('" + cartId + "','" + AmountOfTheSameItem + "','" + totalSum + "','" + typeOfMatbea + "','" + productId + "')";
-                console.log(query3);
-                db.Insert(query3);
-
-                if (ans.length == 0) {
-                    res.send(false);
-                }
-                else {
-                    var ans = {ans: true};
-                    res.send(JSON.stringify(ans));
-                }
-
-            }
-            else {
-                res.send("No Amount In Inventory of this Item Or The Product Is not Exist In Inventory ");
-                // res.send(false);
-            }
-
-
+            var totalSum = price * AmountOfTheSameItem;
+            // console.log( cartId );
+            // console.log( productId);
+            // console.log( AmountOfTheSameItem );
+            // console.log( totalSum );
+            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId+ "','" +AmountOfTheSameItem   + "','"+ totalSum + "' )";
+            // console.log(query3);
+            db.Insert(query3);
+            res.send(true);
         })
-    })
-        .catch(function (ans) {
-            res.send(false);
-        })
+            .catch(function (ans) {
+                res.send(false);
+            })
+    }
+    else  {
+        res.send(false);
+    }
+
+
+
 });
+
 
 //GelobalPrice will caculated only in this function!! and will not save in DB
-router.get('/ViewCurrentItemsInWithGelobalPrice', function (req, res) {
+//checked
+router.get('/ViewCurrentItemsInCartWithGelobalPrice', function (req, res) {
 
-    var productId = req.query.productId;
-    var userName = req.query.userName;
-    var query = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
-    db.Select(query).then(function (ans) {
-        var cartId = ans[0].cartId;
-        var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
-        db.Select(query1).then(function (ans) {
-            console.log(query1);
+    var cartId = req.query.cartId;
 
-            var GelobalPrice_total_cost = 0;
-            var totalSum = 0;
+    var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
+    db.Select(query1).then(function (ans) {
+        console.log(query1);
 
-            function add_to_total_cost(item) {
-                GelobalPrice_total_cost += item.totalSum;
-            }
+        var GelobalPrice_total_cost = 0;
+        var totalSum = 0;
 
-            ans.forEach(add_to_total_cost);
+        function add_to_total_cost(item) {
+            GelobalPrice_total_cost += item.totalSum;
+        }
 
-            console.log(total_cost);
-            if (ans.length == 0) {
-                res.send(false);
-            }
-            else {
-                res.send({ans: GelobalPrice_total_cost});
-            }
+        ans.forEach(add_to_total_cost);
+
+        ans.push(JSON.stringify(GelobalPrice_total_cost));
+        res.send(ans );
 
 
-        })
     })
+
         .catch(function (ans) {
             res.send(false);
         })
 
 });
-
+//checked
 router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
-    var userName = req.query.userName;
     var productId = req.query.productId;
 
-    var query = "SELECT * FROM products WHERE productId = '" + productId + "'"; //can add check with the cart that the same item is on her
+    var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
         console.log(query);
         if (ans.length == 0) {
@@ -326,19 +307,24 @@ router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
 //check that
 router.post('/RemoveItemFromCart', function (req, res) {
-    //give me the cart of the user - and the item he choose past- check the amount currectly
-    // - if is the same amount to remove- delete item all from cart
-    // - if it is no all the amound only update the current amount after remove
+
     var productId = req.body.productId;
     var cartId = req.body.cartId;
     var AmountToRemoveOfTheSameItem = req.body.AmountToRemoveOfTheSameItem;
-    var AmountOfItemsInDB = 0;
+    var AmountOfItemInDB = 0;
     var query = "SELECT * FROM cart WHERE cartId = '" + cartId + "' AND productId ='" + productId + "'";
+    console.log(query );
     db.Select(query).then(function (ans) {
-        var AmountOfItemsInDB = ans[0].AmountOftheSameItem;
-        var price = ans[0].price;
-        var CurrentAmountToupdate = ans[0].AmountOftheSameItem - AmountToRemoveOfTheSameItem;
-        if (CurrentAmountToupdate == 0) {
+
+        var AmountOfItemInDB = ans[0].AmountOfTheSameItem;
+        console.log(AmountOfItemInDB );
+        var totalSum=ans[0].totalSum;
+        var price = (ans[0].totalSum)/(ans[0]. AmountOfTheSameItem);
+        console.log(price );
+        var CurrentAmountToupdate = ans[0].AmountOfTheSameItem - AmountToRemoveOfTheSameItem;
+        console.log(CurrentAmountToupdate);
+        if (CurrentAmountToupdate== 0) {
+            console.log("gfgfg" );
             var query2 = "DELETE FROM cart WHERE  cartId = '" + cartId + "' AND productId ='" + productId + "'";
             db.Delete(query2).then(function (ans) {
                 res.send(ans);
@@ -346,12 +332,18 @@ router.post('/RemoveItemFromCart', function (req, res) {
 
         }
         else if (CurrentAmountToupdate != 0) {
-            var totalSumToUpdate = price * CurrentAmountToupdate;
+            var totalSumToUpdate = (price *CurrentAmountToupdate);
+            console.log(totalSumToUpdate  );
+            var query2 = "DELETE FROM cart WHERE  cartId ='" +cartId+ "' AND productId ='" + productId + "'";
+            console.log(query2);
+            db.Delete(query2);
+            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + CurrentAmountToupdate + "','" + totalSumToUpdate + "' )";
+            console.log(query3);
+            console.log(true);
+            db.Insert(query3);
 
-            var query3 = "UPDATE  cart SET  AmountOftheSameItem = '" + CurrentAmountToupdate + "' AND totalSum ='" + totalSumToUpdate + "' WHERE cartId = '" + cartId + "' AND productId ='" + ItemId + "'";
-            db.Update(query3).then(function (ans) {
-                res.send(ans);
-            })
+            console.log(true);
+            res.send(true);
 
         }
 
@@ -359,6 +351,7 @@ router.post('/RemoveItemFromCart', function (req, res) {
         .catch(function (ans) {
             res.send(false);
         })
+
 });
 
 
