@@ -10,9 +10,9 @@ router.post('/login', function (req, res) {
     var userName = req.body.userName;
     var password = req.body.password;
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";
-    console.log(query);
+
     db.Select(query).then(function (ans) {
-        console.log(ans);
+
         if (ans.length == 0)
             res.send(false);
         else
@@ -20,6 +20,16 @@ router.post('/login', function (req, res) {
     })
 
 
+});
+
+//checked
+router.post('/logout', function (req, res) {
+    var userName = req.body.userName;
+
+    //   var query2 = "DELETE FROM cart WHERE cartId = '" + userName + "'";
+    //  db.Delete(query2);
+
+    res.send(true);
 });
 
 //checked
@@ -39,13 +49,13 @@ router.post('/register', function (req, res) {
     var cartId = req.body.cartId;
     var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "')";
     var query2 = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
-    console.log(query2);
+    //  console.log(query2);
     db.Select(query2).then(function (ans) {
         if (ans.length > 0) {
             res.send("userName Exist");
         }
         else {
-            console.log(query);
+            //  console.log(query);
             if (userName != null & firstName != null & lastName != null & password != null & address != null & city != null & country != null & phone != null & mail != null & creditCard != null & gender != null & lastEntry != null & cartId != null) {
                 db.Insert(query);
                 res.send(true);
@@ -89,9 +99,9 @@ router.post('/login/restorePassword', function (req, res) {
 //checked
 router.get('/LastConnected', function (req, res) {
     var userName = req.query.userName;
-    console.log(userName);
+    // console.log(userName);
     var query = "SELECT lastEntry FROM user_tb WHERE userName ='" + userName + "'";
-    console.log(query);
+    // console.log(query);
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
             res.send(false);

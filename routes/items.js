@@ -17,24 +17,19 @@ router.get('/HotFive', function (req, res, next) {
     var day = today.getDate();
     var month = today.getMonth() + 1; //January is 0!
     var year = today.getFullYear();
-
-
-    console.log("day" + day + "month" + month + "year" + year);
-
-    console.log(today);
-
+    //  console.log("day" + day + "month" + month + "year" + year);
+    //  console.log(today);
 
     if (day < 7) {
         weekAgo = new Date(year, month - 1, 30 - day);
-
     }
     else {
         weekAgo = new Date(year, month, day - 7);
     }
-    console.log(weekAgo);
+    //  console.log(weekAgo);
 
     var query = "SELECT TOP 5 * FROM products  WHERE MONTH(AdeedOn) >= " + weekAgo.getMonth() + " AND DAY(AdeedOn) >= " + weekAgo.getDate() + " ORDER BY salesNumber DESC";
-    console.log(query);
+    //  console.log(query);
     db.Select(query).then(function (ans) {
 
         if (ans.length == 0) {
@@ -45,6 +40,9 @@ router.get('/HotFive', function (req, res, next) {
         }
 
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
 //return new items from last month
@@ -59,9 +57,9 @@ router.get('/newItemsFromLastMonth', function (req, res) {
     else {
         var month = curDate.getMonth();
     }
-    console.log(month)
+    //  console.log(month)
     var query = "SELECT * FROM products WHERE MONTH(AdeedOn) >= " + month + " AND YEAR(AdeedOn) >= " + year;
-    console.log(query);
+    //   console.log(query);
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
             res.send(false);
@@ -70,6 +68,9 @@ router.get('/newItemsFromLastMonth', function (req, res) {
             res.send(JSON.stringify(ans));
         }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 
 });
@@ -77,11 +78,11 @@ router.get('/newItemsFromLastMonth', function (req, res) {
 //checked
 router.get('/recommendedItemsForUser/GetUserCategories', function (req, res) {
 
-    // var recAns = [];
+
     var userName = req.query.userName;
-    console.log(userName);
+
     var query1 = "SELECT * FROM user_categories WHERE userName = '" + userName + "'";
-    console.log(query1);
+
     db.Select(query1).then(function (ans) {
 
         if (ans.length == 0) {
@@ -103,9 +104,9 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
 
     var userName = req.query.userName;
     var categoryId = req.query.categoryId;
-    console.log(userName);
+    //   console.log(userName);
     var query = "SELECT TOP 5 * FROM products WHERE categoryId = " + categoryId + "  ORDER BY salesNumber DESC";
-    console.log(query);
+    //  console.log(query);
     db.Select(query).then(function (ans) {
 
         if (ans.length == 0) {
@@ -118,41 +119,38 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
         .catch(function (ans) {
             res.send(false);
         })
-
-
 });
 
 
 //check if the category and user already exist
-//need to check
+//checked
 router.get('/SetFavoriteCategory/CheckExistCategoryId', function (req, res) {
     var cat = req.query.categoryId;
     var user = req.query.userName;
     var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user + "'";
-    console.log(query1);
+    // console.log(query1);
     db.Select(query1).then(function (ans) {
-        console.log("anf");
+
         if (ans.length > 0)
-            res.send("True");
+            res.send(true);
         else {
-            res.send("False  ");
+            res.send(false);
         }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 });
-
+//checked
 router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
     var cat = req.body.categoryId;
     var user = req.body.userName;
-    if (cat != null & user != null) {
-        var query = "INSERT INTO user_categories VALUES ('" + cat + "','" + user + "')";
-        console.log(query);
-        db.Insert(query);
-        res.send(true)
-    }
-    else {
-        res.send(false);
-    }
+
+    var query = "INSERT INTO user_categories VALUES ('" + cat + "','" + user + "')";
+    console.log(query);
+    db.Insert(query);
+    res.send(true);
 
 
 });
@@ -161,10 +159,10 @@ router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
 //return all items by some categorey
 //checked
 router.get('/ItemByCategory', function (req, res) {
-    var category = req.query.category;
+    var category = req.query.categoryId;
     var maxProductsToReturn = req.query.maxProductsToReturn;
     var query = "SELECT TOP " + maxProductsToReturn + " * FROM  products WHERE categoryId = " + category + " ";
-    console.log(query);
+    //console.log(query);
     db.Select(query).then(function (ans) {
         if (ans.length == 0) {
             res.send(false);
@@ -172,9 +170,10 @@ router.get('/ItemByCategory', function (req, res) {
         else {
             res.send(ans);
         }
-
-
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
 
@@ -191,6 +190,9 @@ router.get('/ItemById', function (req, res) {
             res.send(ans);
         }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 //return item by name
 //checked
@@ -205,8 +207,12 @@ router.get('/ItemByName', function (req, res) {
             res.send(ans);
         }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 //return items sort by parmeter:Size or added date
+//checked
 router.get('/ItemsSortBy', function (req, res) {
     var parm = req.query.parm;
     var maxProductsToReturn = req.query.maxProductsToReturn;
@@ -219,10 +225,13 @@ router.get('/ItemsSortBy', function (req, res) {
             res.send(ans);
         }
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
 
-//When add to cart - the global amount of the iten in inventory dont changed- only in buy - it will change
+//When add to cart - the global amount of the item in inventory dont changed- only in buy - it will change
 //counsme that amountInInventory is update every week and it has a high amount of per item
 //checked
 router.post('/addItemToCart', function (req, res) {
@@ -234,12 +243,8 @@ router.post('/addItemToCart', function (req, res) {
         db.Select(query2).then(function (ans) {
             var price = ans[0].price;
             var totalSum = price * AmountOfTheSameItem;
-            // console.log( cartId );
-            // console.log( productId);
-            // console.log( AmountOfTheSameItem );
-            // console.log( totalSum );
             var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + AmountOfTheSameItem + "','" + totalSum + "' )";
-            // console.log(query3);
+
             db.Insert(query3);
             res.send(true);
         })
@@ -263,7 +268,7 @@ router.get('/ViewCurrentItemsInCartWithGelobalPrice', function (req, res) {
 
     var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
     db.Select(query1).then(function (ans) {
-        console.log(query1);
+        //console.log(query1);
 
         var GelobalPrice_total_cost = 0;
         var totalSum = 0;
@@ -292,7 +297,7 @@ router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
 
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
-        console.log(query);
+        //   console.log(query);
         if (ans.length == 0) {
             res.send(false);
         }
@@ -302,7 +307,7 @@ router.get('/GetUpdatesDetailsOfItemInCart', function (req, res) {
     })
 
 });
-//to check
+// checked
 router.post('/RemoveItemFromCart', function (req, res) {
 
     var productId = req.body.productId;
@@ -320,7 +325,7 @@ router.post('/RemoveItemFromCart', function (req, res) {
         var CurrentAmountToupdate = AmountOfItemInDB - AmountToRemoveOfTheSameItem;
         console.log(CurrentAmountToupdate);
         if (CurrentAmountToupdate == 0) {
-            console.log("gfgfg");
+            console.log("delete all item");
             var query2 = "DELETE FROM cart WHERE  cartId = '" + cartId + "' AND productId ='" + productId + "'";
             db.Delete(query2).then(function (ans) {
                 res.send(ans);
@@ -328,43 +333,52 @@ router.post('/RemoveItemFromCart', function (req, res) {
         }
         else if (CurrentAmountToupdate != 0) {
             var totalSumToUpdate = (price * CurrentAmountToupdate);
-            console.log(totalSumToUpdate);
+            console.log("update");
             query2 = "UPDATE cart SET AmountOfTheSameItem = '" + CurrentAmountToupdate + "', totalSum = '" + totalSumToUpdate + "'" + " WHERE cartId = '" + cartId + "' AND productId = '" + productId + "'";
-            console.log(query2);
+            // console.log(query2);
             db.Insert(query2);
             res.send(true);
 
         }
 
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 });
 
 //checked
 router.get('/GetPreviousOrders', function (req, res) {
-
+//return in the last cell of ans the amount of the prev orders
     var userName = req.query.userName;
     var query = "SELECT * FROM order_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
 
         if (ans.length > 0) {
+            ans.push(ans.length);
             res.send(ans);
+
         }
-        else    res.send(false);
+        else {
+            res.send(false);
+        }
 
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 });
 
-//check again
+//checked
 router.get('/GetPreviousOrderDetails', function (req, res) {
-//return in the last cell the amount of the prev orders
+
     var orderId = req.query.orderId;
     var userName = req.query.userName;
     var query = "SELECT * FROM order_tb WHERE orderId = '" + orderId + "' AND userName='" + userName + "'";
     db.Select(query).then(function (ans) {
-        //check if this order exist
+
         if (ans.length > 0) {
-            ans.push(ans.length);
             res.send(ans);
         }
         else {
@@ -372,11 +386,14 @@ router.get('/GetPreviousOrderDetails', function (req, res) {
         }
 
     })
+        .catch(function (ans) {
+            res.send(false);
+        })
 
 });
 //checked
 router.get('/GetAmountOfItemInInvetory', function (req, res) {
-//return in the last cell the amount of the item
+//return in the last cell of ans the amount of the item
     var productId = req.query.productId;
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
@@ -390,6 +407,8 @@ router.get('/GetAmountOfItemInInvetory', function (req, res) {
             res.send(false);
         }
 
+    }).catch(function (ans) {
+        res.send(false);
     })
 
 });
@@ -413,13 +432,14 @@ router.post('/CreateNewOrder', function (req, res) {
 
 });
 //checked
+//we counsume that the order must create before that func! (in the server side)
 router.post('/ApproveOrder', function (req, res) {
 
     var statusOrder = "Yes Approved";
     var orderId = req.body.orderId;
     var userName = req.body.userName;
     var query = "UPDATE order_tb SET statusOrder = '" + statusOrder + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName + "'";
-    db.Update(query);
+    db.Insert(query);
     res.send(true);
 
 });
@@ -428,7 +448,7 @@ router.post('/ApproveOrder', function (req, res) {
 //update the amount of the item in the inventory !!!!!!!
 //checked
 router.get('/PayOrder/CheckEnoughAmountInInventory', function (req, res) {
-//return in the last cell the amount which left in inventory after the buy
+//return in the last cell of the ans the amount which left in inventory after the buy
     var cartId = req.query.cartId;
     var productId = req.query.productId;
     var currentAmountItemInCart = 0;
@@ -440,6 +460,7 @@ router.get('/PayOrder/CheckEnoughAmountInInventory', function (req, res) {
         } else {
             res.send(false);
         }
+
     }).then(function (ans) {
 
         var query1 = "SELECT * FROM products WHERE productId  = '" + productId + "'";
@@ -460,12 +481,15 @@ router.get('/PayOrder/CheckEnoughAmountInInventory', function (req, res) {
             .catch(function (ans) {
                 res.send(false);
             })
+    }).catch(function (ans) {
+        res.send(false);
     })
 
 });
 
 
 //update the amount of the item in the inventory !!!!!!!
+//checked
 router.post('/PayOrder/UpdatetheCurrectAmountInInventory', function (req, res) {
 
     var productId = req.body.productId;
@@ -516,12 +540,11 @@ router.post('/PayOrder/DeleteCart', function (req, res) {
 
     var userName = req.body.userName;
 
-    var query2 = "DELETE FROM cart WHERE cartId = '" + userName + "'";
-    db.Delete(query2);
-    res.send("The Order Was Payed Succesfully");
+    var query = "DELETE FROM cart WHERE cartId = '" + userName + "'";
+    db.Delete(query);
+    console.log("The Order Payed Succesfully");
+    res.send(true);
 });
 
 module.exports = router;
 
-
-module.exports = router;
