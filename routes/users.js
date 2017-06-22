@@ -7,6 +7,7 @@ router.get('/', function (req, res, next) {
 });
 //checked
 router.post('/login', function (req, res) {
+    console.log("in login");
     var userName = req.body.userName;
     var password = req.body.password;
     var query = "SELECT * FROM user_tb WHERE userName ='" + userName + "' AND password ='" + password + "'";

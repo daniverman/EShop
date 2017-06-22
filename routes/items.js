@@ -31,9 +31,12 @@ router.get('/HotFive', function (req, res, next) {
     var query = "SELECT TOP 5 * FROM products  WHERE MONTH(AdeedOn) >= " + weekAgo.getMonth() + " AND DAY(AdeedOn) >= " + weekAgo.getDate() + " ORDER BY salesNumber DESC";
     //  console.log(query);
     db.Select(query).then(function (ans) {
-
+        console.log(query);
         if (ans.length == 0) {
-            res.send(false);
+            var ans ={
+                ans : "false"
+            }
+            res.send(ans);
         }
         else {
             res.send(JSON.stringify(ans));
