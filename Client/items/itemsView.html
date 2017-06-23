@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head ng-app="myApp">
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <title >Title</title>
 </head>
 <body>
+
+
+<div class="container" ng-controller="itemController as itemctrl">
+    <input type="text" ng-model="productId" >
+    <button type="button" ng-click="getItem()">get Item</button>
+
+
+    {{test}}
+
+
+</div>
+
 
 </body>
 </html>

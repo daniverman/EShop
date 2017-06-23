@@ -22,8 +22,8 @@ app.config( ['$routeProvider', function($routeProvider) {
             controller : "aboutPageController"
         })
         .when("/items", {
-            templateUrl : "itemsPage.html",
-            controller : "itemsPageController"
+            templateUrl : "./items/itemsView.html",
+            controller : "itemController"
         })
         .when("/searchItems", {
             templateUrl : "searchItemsPage.html",
