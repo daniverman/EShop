@@ -1,20 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head ng-app="myApp">
+    <link rel="stylesheet" type="text/css" href="items/itemStyle.css">
     <meta charset="UTF-8">
-
-    <title >Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Item Page</title>
 </head>
 <body>
 
 
 <div class="container" ng-controller="itemController as itemctrl">
-    <input type="text" ng-model="productId" >
-    <button type="button" ng-click="getItem()">get Item</button>
 
 
-    {{test}}
+    <div class="container-fluid">
+        <div class="row content">
+            <!--left side-->
+            <!-the category select->
+            <div class="col-md-3 sidenav ">
 
+                <ul class="nav nav-pills nav-stacked">
+                    <h3>Category</h3>
+                    <li class="Chose category">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            Chose Category <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('3')">sport
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('4')">casual
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('5')">elegant
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('6')">dress
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('7')">v shirt
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('8')">long sleeve
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('9')">short sleeve
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button style="height:100%;width:100%;" class="btn btn-primary"
+                                        ng-click="getItemByCategory('10')">dry fit
+                                </button>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="divider"></li>
+                    <br>
+                    <h3>Gender</h3>
+                    <label>
+                        <div class="col-lg-10">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="GenderRadios" id="optionsRadios1" value="Men"
+                                           ng-click="getItemByCategory('1')">
+                                    Men
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="GenderRadios" id="optionsRadios2" value="Women"
+                                           ng-click="getItemByCategory('2')">
+                                    Women
+                                </label>
+                            </div>
+
+                        </div>
+                    </label>
+                    </li>
+                    <br>
+                    <h3>Sort By</h3>
+
+                    <div class="col-lg-10">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="SortRadios" id="optionsRadios3" value="price"
+                                       ng-model="filter" checked="checked">
+                                Price
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <input type="radio" name="SortRadios" id="optionsRadios4" value="size" ng-model="filter">
+                            Size
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="SortRadios" id="optionsRadios5" value="AdeedOn"
+                                       ng-model="filter">
+                                Date Added
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="SortRadios" id="optionsRadios6" value="salesNumber"
+                                       ng-model="filter">
+                                Sales
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="SortRadios" id="optionsRadios7" value="color"
+                                       ng-model="filter">
+                                Color
+                            </label>
+                        </div>
+                    </div>
+
+                </ul>
+            </div>
+
+            <!--main item display-->
+            <div class="col-md-9">
+                <div class="container">
+                    <div class="row row-centered">
+                        <!--Result object -->
+                        {{test}}
+                        <div class="col-md-3 col-centered" ng-repeat=" item in itemctrl.returnItems | orderBy:filter">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">{{item.name}}</div>
+                                <div class="panel-body"></a><img src="{{item.image}}" class="img-responsive" alt="Image"
+                                                                 ng-click="openDialog(item)">
+
+                                    </a></div>
+                                <div class="panel-footer">Description: {{item.discription}}</div>
+                                <div class="panel-footer">Price: {{item.price}} ₪</div>
+                                <div class="panel-footer">Size: {{item.size}}</div>
+                                <div class="panel-footer">Color: {{item.color}}</div>
+                                <div class="panel-footer">Brand: {{item.brand}}</div>
+                                <div class="panel-footer">Sales Number: {{item.salesNumber}}</div>
+                                <div class="panel-footer">
+                                    <button class="btn btn-primary" ng-click="openDialog(item)">Open</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!----open dialog of prodect-------->
+                    <div class="show-modal" ng-show="showModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                            ng-click="cancel()">&times;
+                                    </button>
+                                    <h4 class="modal-title">{{chocsenItem.name}}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <img src="{{chocsenItem.image}}" class="img-responsive" alt="Image">
+                                    <h4>Description:</h4><h5>{{chocsenItem.discription}}</h5>
+                                    <h4>Price:</h4><h5>{{chocsenItem.price}}</h5>
+                                    <h4>Size:</h4><h5>{{chocsenItem.size}}</h5>
+                                    <h4>Color:</h4><h5>{{chocsenItem.color}}</h5>
+                                    <h4>Sales Number::</h4><h5>{{chocsenItem.salesNumber}}</h5>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <form class="form-horizontal" name="amountForm">
+                                        <label class="control-label" for="inputDefault"> chose quantity</label>
+                                        <input placeholder="you Have to Chose Amount" type="number" class="form-control"
+                                               id="inputDefault" name="amountInput" ng-model="AmountTheUserChose"
+                                               ng-pattern="/^[1-9]{1,3}$/" required>
+                                        <button type="button" class="btn btn-primary" ng-click="addItemToCart()"
+                                                ng-show="amountForm.amountInput.$valid ">Add to cart
+                                        </button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                ng-click="cancel()">Close
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<footer class="container-fluid">
+    <h3>Check Our Recommended Items For You</h3>
+    <div class="container">
+        <div class="row row-centered">
+            <div class="col-md-3 col-centered">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Panel heading</div>
+                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
+                                                 alt="Image"></div>
+                    <div class="panel-footer">
+                        Panel content
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-centered">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Panel heading</div>
+                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
+                                                 alt="Image"></div>
+                    <div class="panel-footer">
+                        Panel content
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-centered">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Panel heading</div>
+                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
+                                                 alt="Image"></div>
+                    <div class="panel-footer">
+                        Panel content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
 
 </div>
 

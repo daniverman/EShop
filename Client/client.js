@@ -1,7 +1,7 @@
 /**
  * Created by daniel on 22/06/2017.
  */
-var app = angular.module('myApp' , ['ngRoute']);
+var app = angular.module('myApp' , ['ngRoute','localStorageService']);
 
 app.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
@@ -30,8 +30,8 @@ app.config( ['$routeProvider', function($routeProvider) {
             controller : "searchItemsPageController"
         })
         .when("/cart", {
-            templateUrl : "cartPage.html",
-            controller : "cartPageController"
+            templateUrl : "./cart/cartView.html",
+            controller : "./cart/cartController"
         })
         .when("/order", {
             templateUrl : "orderPage.html",
@@ -40,6 +40,34 @@ app.config( ['$routeProvider', function($routeProvider) {
         .otherwise({redirect: '/',
         });
 }]);
+
+app.service('serviceShareData', function($window) {
+    var KEY = 'App.SelectedValue';
+
+    var addData = function(newObj) {
+        var mydata = $window.sessionStorage.getItem(KEY);
+        if (mydata) {
+            mydata = JSON.parse(mydata);
+        } else {
+            mydata = [];
+        }
+        mydata.push(newObj);
+        $window.sessionStorage.setItem(KEY, JSON.stringify(mydata));
+    };
+
+    var getData = function(){
+        var mydata = $window.sessionStorage.getItem(KEY);
+        if (mydata) {
+            mydata = JSON.parse(mydata);
+        }
+        return mydata || [];
+    };
+
+    return {
+        addData: addData,
+        getData: getData
+    };
+});
 
 
 
