@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myApp" >
+<html lang="en" ng-app="myApp">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page </title>
+    <title>Login Page </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -10,141 +10,63 @@
     <SCRIPT SRC="../angular.js"></SCRIPT>
     <SCRIPT SRC="../angular-route.js"></SCRIPT>
     <script src="../client.js"></script>
-    <script src="loginControler.js"></script>
+    <script src="loginController.js"></script>
 </head>
 <body>
 
 
-
-<div ng-controller="loginController as loginCtr">
-    <form class="form-horizontal" ng-submit="checkDetailsOnClick()">
+<div class="login-container" ng-controller="loginController as loginCtrl">
+    <Form name="loginForm" ng-submit="loginCtrl.login(loginForm.$valid)" novalidate class="form-horizontal">
         <fieldset>
             <legend><h1>Log In</h1></legend>
-            {{test}}
             <div class="form-group">
-                <label for="inputUsername" ng-model="userName" class="col-lg-2 control-label"> User Name</label>
+                <label class="col-lg-2 control-label"> User Name:</label>
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="inputUsername" placeholder="userName">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPassword" class="col-lg-2 control-label">Password</label>
-                <div class="col-lg-10">
-                    <input type="password"  ng-model="password" class="form-control" id="inputPassword" placeholder="Password">
+                    <!--input type="text" ng-model="userName" class="form-control" id="inputUsername" placeholder="userName"-->
+                    <input type="text"
+                           ng-model="loginCtrl.user.userName"
+                           ng-required="true"
+                           class="form-control"
+                           name="usernameInput"
+                           ng-pattern="/^[a-zA-Z}+$/" ng-minlength="3" ng-maxlength="8" placeholder="Enter Username">
+                    <p ng-show="loginForm.usernameInput.$invalid && !loginForm.usernameInput.$pristine && loginForm.usernameInput.$error.minlength && loginForm.usernameInput.$error.maxlength"
+                       class="help-block">username is required Or it is too short Or too Long</p>
 
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-lg-10 col-lg-offset-2">
-                    <button type="reset" class="btn btn-default">Cancel</button>
-                    <button type="submit" class="btn btn-primary" ng-click="checkDetailsOnClick()">Submit</button>
+                <label class="col-lg-2 control-label">Password:</label>
+                <div class="col-lg-10">
+                    <input type="password"
+                           ng-model="loginCtrl.user.password"
+                           ng-required="true"
+                           class="form-control"
+                           name="passwordInput"
+                           placeholder="Enter Password"
+                           ng-minlength="5"
+                           ng-maxlength="10">
+                    <p ng-show="loginForm.passwordInput.$error.minlength && !loginForm.passwordInput.$pristine && loginForm.passwordInput.$error.maxlength"
+                       class="help-block">Password is too short Or too Long</p>
+
                 </div>
             </div>
+            <input type="submit"
+                   class="btn btn-success btn-lg"
+                   value="Login"
+                   location="center"
+                   ng-disabled="loginForm.$invalid">
         </fieldset>
-    </form>
+    </Form>
+    <div>
+        {{loginCtrl.errorMessage}}
+    </div>
 </div>
-
+<button type="text"
+        class="btn btn-restorePage "
+        location="right" ng-click="MoveToPage('restore')">Forget Your Password -Restore!
+</button>
+</div>
 
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

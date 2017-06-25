@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register Page </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <SCRIPT SRC="../../../../Desktop/EShop-master/Client/angular.js"></SCRIPT>
+    <SCRIPT SRC="../../../../Desktop/EShop-master/Client/angular-route.js"></SCRIPT>
+    <script src="../../../../Desktop/EShop-master/Client/client.js"></script>
+    <script src="registerController.js"></script>
+</head>
+<body>
+
+
+
+
+<div class="register-container" ng-controller="registerController as registerCtrl">
+    <Form name="regForm"   class="form-horizontal">
+        <fieldset>
+            <legend><h1>Register Here</h1></legend>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> User Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.userName"
+                           ng-required="true"
+                           class="form-control"
+                           name="usernameInput"
+                           ng-minlength="3" ng-maxlength="8"     ng-pattern="/^[a-zA-Z}+$/"   placeholder="Enter Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> First Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.FirstName"
+                           ng-required="true"
+                           class="form-control"
+                           name="firstNameInput"
+                             placeholder="Enter FirstName">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Last Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.LastName"
+                           ng-required="true"
+                           class="form-control"
+                           name="lastNameInput"
+                            placeholder="Enter Last Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Address:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.Address"
+                           ng-required="true"
+                           class="form-control"
+                           name="AddressInput"
+                           placeholder="Enter Address">
+                </div>
+            </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> Telephone:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.Telephone"
+                       ng-required="true"
+                       class="form-control"
+                       name="telephoneInput"
+                        placeholder="Enter Telephone">
+            </div>
+        </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> CreditCard:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.CreditCard"
+                       ng-required="true"
+                       class="form-control"
+                       name="CreditCardInput"
+                        placeholder="Enter CreditCard">
+            </div>
+        </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> Gender:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.Gender"
+                       ng-required="true"
+                       class="form-control"
+                       name="GenderInput"
+                     placeholder="Enter  Gender">
+            </div>
+        </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Email:</label>
+                <div class="col-lg-10">
+
+                    <input type="email"
+                           ng-model="registerCtrl.Email"
+                           ng-required="true"
+                           class="form-control"
+                           name="emailInput"
+                            placeholder="Enter Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Country:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.Country"
+                           ng-required="true"
+                           class="form-control"
+                           name="CountryInput"
+                            placeholder="Enter Country">
+                </div>
+            </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> City:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.City"
+                       ng-required="true"
+                       class="form-control"
+                       name="CityInput"
+                         placeholder="Enter City">
+            </div>
+        </div>
+            <div class="form-group">
+                <label  class="col-lg-2 control-label">Password:</label>
+                <div class="col-lg-10">
+                    <input type="password"
+                           ng-model="registerCtrl.password"
+                           ng-required="true"
+                           class="form-control"
+                           name="passwordInput"
+                           placeholder="Enter Password"
+                           ng-minlength="5" ng-maxlength="10"   >
+                </div>
+            </div>
+
+            <input type="submit"
+                   class="btn btn-success btn-reg"
+                   value="register"
+                   location="center" ng-click="checkDetailsOnClick()"
+                   ng-disabled="registerOption.$invalid">
+        </fieldset>
+    </Form>
+    <div>
+        {{registerCtrl.errorMessage}}
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div ng-controller="registerControler as registerCtr" >-->
+    <!--<form class="form-horizontal">-->
+        <!--<fieldset>-->
+            <!--<legend><h1>Register</h1></legend>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputUserName" ng-model="registerCtr.UserName" class="col-lg-2 control-label"> User Name</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputUserName" placeholder="user Name">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputFirst" ng-model="registerCtr.FirstName" class="col-lg-2 control-label"> First Name</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputFirst" placeholder="First Name">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputLast"  ng-model="registerCtr.LastName" class="col-lg-2 control-label"> Last Name</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputLast" placeholder="Last Name">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputAddress"  ng-model="registerCtr.Add" class="col-lg-2 control-label"> Address</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputAddress" placeholder="Address">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputCity"  ng-model="registerCtr.city" class="col-lg-2 control-label">City</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputCity" placeholder="City">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputCountry" ng-model="registerCtr.country"  class="col-lg-2 control-label">Country</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputCountry" placeholder="Country">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputphone"  ng-model="registerCtr.phone" class="col-lg-2 control-label"> Phone Num.</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputphone" placeholder="Phone Number">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputEmail"  ng-model="registerCtr.email" class="col-lg-2 control-label"> Email</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputEmail" placeholder="Email">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputCredit Card Num" ng-model="registerCtr.cerdit" class="col-lg-2 control-label"> Credit Card Num.</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputCredit Card Num" placeholder="Credit Card Num.">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputGender" ng-model="registerCtr.gender" class="col-lg-2 control-label">Gender</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" ng-model="registerCtr.UserName" class="form-control" id="inputGender" placeholder="Gender">-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="form-group">-->
+                <!--<label for="inputCategoryName1" ng-model="registerCtr.c1" class="col-lg-2 control-label">Category Name 1</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputCategoryName1" placeholder="Category Name 1">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label for="inputCategoryName2" ng-model="registerCtr.c2" class="col-lg-2 control-label">Category Name 2</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="text" class="form-control" id="inputCategoryName2" placeholder="Category Name 2">-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="form-group">-->
+                <!--<label for="inputPassword" ng-model="registerCtr.password" class="col-lg-2 control-label">Password</label>-->
+                <!--<div class="col-lg-10">-->
+                    <!--<input type="password" class="form-control" id="inputPassword" placeholder="Password">-->
+
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<div class="col-lg-10 col-lg-offset-2">-->
+                    <!--<button type="reset" class="btn btn-default">Cancel</button>-->
+                    <!--<button type="submit"  ng-click="checkDetailsOnClick()" class="btn btn-primary">Submit</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</fieldset>-->
+    <!--</form>-->
+<!--</div>-->
+
+<!--<footer class="container-fluid text-center">-->
+    <!--<p>Copyright © 2017 Eshop Inc. All Rights Reserved to Daniel&Hen</p>-->
+
+<!--</footer>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

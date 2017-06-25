@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Item Page</title>
 </head>
-<body>
+<body ng-controller="itemController as itemctrl">
 
 
-<div class="container" ng-controller="itemController as itemctrl">
+<div class="container" >
 
 
     <div class="container-fluid">
@@ -144,7 +144,6 @@
                 <div class="container">
                     <div class="row row-centered">
                         <!--Result object -->
-                        {{test}}
                         <div class="col-md-3 col-centered" ng-repeat=" item in itemctrl.returnItems | orderBy:filter">
                             <div class="panel panel-default">
                                 <div class="panel-heading">{{item.name}}</div>
@@ -208,38 +207,18 @@
     </div>
 </div>
 </div>
-
-<footer class="container-fluid">
+<!--need to check-->
+<footer class="container-fluid" ng-show="userIsLoged()">
     <h3>Check Our Recommended Items For You</h3>
-    <div class="container">
+    <div class="container" ng-repeat="item in itemctrl.favAns | orderBy:'salesNumber' | limitTo : '5'" >
         <div class="row row-centered">
             <div class="col-md-3 col-centered">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Panel heading</div>
-                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-                                                 alt="Image"></div>
+                    <div class="panel-heading">{{item.name}}</div>
+                    <div class="panel-body"><img src="{{item.image}}" class="img-responsive" alt="Image"></div>
+                    <div class="panel-footer">{{item.discription}}</div>
                     <div class="panel-footer">
-                        Panel content
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-centered">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Panel heading</div>
-                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-                                                 alt="Image"></div>
-                    <div class="panel-footer">
-                        Panel content
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-centered">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Panel heading</div>
-                    <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
-                                                 alt="Image"></div>
-                    <div class="panel-footer">
-                        Panel content
+                        <button class="btn btn-primary" ng-click="openDialog(item)">Open</button>
                     </div>
                 </div>
             </div>

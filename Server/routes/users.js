@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../DButils');
+
+
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
     res.send('the first page of users');
@@ -14,10 +17,16 @@ router.post('/login', function (req, res) {
 
     db.Select(query).then(function (ans) {
 
-        if (ans.length == 0)
-            res.send(false);
-        else
-            res.send(ans);
+        if (ans.length == 0){
+            res.status(403).send("username or password incorrect");
+            // res.send(false);
+        }
+        else{
+            var token = req.body.password+11223344556677;
+            app.locals.users[userName] = token;
+            res.json(token);
+        }
+        // res.send(ans);
     })
 
 
@@ -47,7 +56,7 @@ router.post('/register', function (req, res) {
     var creditCard = req.body.creditCard;
     var gender = req.body.gender;
     var lastEntry = req.body.lastEntry;
-    var cartId = req.body.cartId;
+    var cartId = req.body.userName;
     var query = "INSERT INTO user_tb VALUES ('" + userName + "', '" + firstName + "', '" + lastName + "', '" + password + "', '" + address + "', '" + city + "', '" + country + "', '" + phone + "', '" + mail + "', '" + creditCard + "', '" + gender + "', '" + lastEntry + "', '" + cartId + "')";
     var query2 = "SELECT * FROM user_tb WHERE userName = '" + userName + "'";
     //  console.log(query2);

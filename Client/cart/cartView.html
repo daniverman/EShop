@@ -2,9 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>CartPage</title>
 </head>
 <body>
+<table class="table table-striped table-hover ">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Product Name</th>
+        <th>Color</th>
+        <th>Size</th>
+        <th>Price</th>
+        <th>Amount</th>
+        <th>Sum</th>
+        <th>Show Product</th>
+        <th>Remove Product</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{ItemNumber}}ItemNumber</td>
+        <td>{{ItemName}}ItemName</td>
+        <td>{{ItemColor}}ItemColor</td>
+        <td>{{ItemSize}}ItemSize</td>
+        <td>{{ItemPrice}}ItemPrice</td>
+        <td>{{Amount}}Amount</td>
+        <td>{{Amount*ItemPrice}}Amount</td>
+        <td><button class="btn-info">click To View</button></td>
+        <td><button class="btn-danger">click To Remove</button></td>
+    </tr>
+    <tr class="success">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{cartTotal}}</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button class="btn-default">Show previous orders </button></td>
+    <td><button class="btn-success">By All In cart</button></td>
+    <td></td>
+    <td>*all price in ₪</td>
+    </tfoot>
+</table>
 
 </body>
 </html>
