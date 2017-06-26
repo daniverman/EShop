@@ -9,7 +9,7 @@
 <body ng-controller="itemController as itemctrl">
 
 
-<div class="container" >
+<div class="container">
 
 
     <div class="container-fluid">
@@ -139,18 +139,17 @@
                 </ul>
             </div>
 
+
             <!--main item display-->
             <div class="col-md-9">
                 <div class="container">
                     <div class="row row-centered">
                         <!--Result object -->
-                        <div class="col-md-3 col-centered" ng-repeat=" item in itemctrl.returnItems | orderBy:filter">
+                        <div class="col-md-3 col-centered" ng-repeat=" item in returnItems | orderBy:filter">
                             <div class="panel panel-default">
                                 <div class="panel-heading">{{item.name}}</div>
                                 <div class="panel-body"></a><img src="{{item.image}}" class="img-responsive" alt="Image"
-                                                                 ng-click="openDialog(item)">
-
-                                    </a></div>
+                                                                 ng-click="openDialog(item)"></a></div>
                                 <div class="panel-footer">Description: {{item.discription}}</div>
                                 <div class="panel-footer">Price: {{item.price}} ₪</div>
                                 <div class="panel-footer">Size: {{item.size}}</div>
@@ -208,15 +207,15 @@
 </div>
 </div>
 <!--need to check-->
-<footer class="container-fluid" ng-show="userIsLoged()">
+<footer class="container-fluid" ng-init="rec()" style="display: block" >
     <h3>Check Our Recommended Items For You</h3>
-    <div class="container" ng-repeat="item in itemctrl.favAns | orderBy:'salesNumber' | limitTo : '5'" >
+    <div class="container" ng-repeat="item in RecItems | orderBy:'salesNumber'">
         <div class="row row-centered">
             <div class="col-md-3 col-centered">
-                <div class="panel panel-default">
+                <div class="panel panel-default" style="display: inline-block">
                     <div class="panel-heading">{{item.name}}</div>
                     <div class="panel-body"><img src="{{item.image}}" class="img-responsive" alt="Image"></div>
-                    <div class="panel-footer">{{item.discription}}</div>
+                    <div class="panel-body" style="color: black">{{item.discription}}</div>
                     <div class="panel-footer">
                         <button class="btn btn-primary" ng-click="openDialog(item)">Open</button>
                     </div>
@@ -224,6 +223,7 @@
             </div>
         </div>
     </div>
+
 </footer>
 
 </div>

@@ -13,17 +13,16 @@
     <script src="items/itemsController.js"></script>
     <script src="login/loginControler.js"></script>
     <script src="cart/cartController.js"></script>
-    <script src="register/registerController.js"></script>
-    <script src="localStorageService/localStorageController.js"></script>
 
 
 
-
-    <script src="../../../WebstormProjects/EShop/Client/register/registerController.js"></script>
-    <script src="../../../WebstormProjects/EShop/Client/localStorageService/localStorageController.js"></script>
 
 </head>
-<body ng-controller="HomePageController as HomePageCtrl">
+
+<body ng-controller="HomePageController as homePageCtrl">
+
+
+
 
 <div class="jumbotron">
     <div class="container text-center">
@@ -51,28 +50,28 @@
                 <li><a href="#items">Items Test</a></li>
                 <li><a href="#about">about</a></li>
 
-                <li class="dropdown"  ng-show="UserService.isLoggedIn">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Items Options <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#Items By Category And Recommended Items" >Items By Category And Recommended Items</a></li>
-                        <li><a href="#" >Items Cart</a></li>
+                        <li><a href="#Items By Category And Recommended Items">Items By Category And Recommended Items</a></li>
+                        <li><a href="#">Items Cart</a></li>
                         <li class="divider"></li>
-                        <li><a href="#" >Previous Orders</a></li>
+                        <li><a href="#">Previous Orders</a></li>
                         <li class="divider"></li>
-                        <li><a href="#" >One more separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
             </ul>
-            <!--<form class="navbar-form navbar-left" role="search">-->
-            <!--<div class="form-group">-->
-            <!--//  <input type="text" class="form-control" placeholder="Search Item">-->
-            <!--</div>-->
-            <!--<button type="submit" class="btn btn-default">Submit</button>-->
-            <!--</form>-->
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search Item">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a ng-click="MoveToPage('login')"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
-                <li><a ng-click="MoveToPage('cart')" ><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
-                <li><a ng-click="MoveToPage('register')" ><span class="glyphicon glyphicon-user"></span> Register</a></li>
+                <li><a  ng-click="MoveToPage('login')"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
+                <li><a href="#cart"><span class="glyphicon glyphicon-shopping-cart"></span> Pay Cart</a></li>
+                <li><a ><span class="glyphicon glyphicon-user"></span> Register</a></li>
             </ul>
         </div>
     </div>
@@ -80,7 +79,6 @@
 
 <div id="main">
     <!-- this is where content will be injected -->
-    <!-- the homepage controller heve attribute that if function which help to move in all pages of the home page-->
     <div ng-view></div>
 
 </div>
@@ -92,6 +90,6 @@
 </footer>
 
 
-</div>
+
 </body>
 </html>
