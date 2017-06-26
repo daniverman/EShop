@@ -209,9 +209,9 @@
 <!--need to check-->
 <footer class="container-fluid" ng-init="rec()" style="display: block" >
     <h3>Check Our Recommended Items For You</h3>
-    <div class="container" ng-repeat="item in RecItems | orderBy:'salesNumber'">
+    <div class="container" >
         <div class="row row-centered">
-            <div class="col-md-3 col-centered">
+            <div class="col-md-3 col-centered" ng-repeat="item in RecItems | orderBy:'salesNumber'">
                 <div class="panel panel-default" style="display: inline-block">
                     <div class="panel-heading">{{item.name}}</div>
                     <div class="panel-body"><img src="{{item.image}}" class="img-responsive" alt="Image"></div>
