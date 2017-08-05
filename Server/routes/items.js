@@ -28,13 +28,13 @@ router.get('/HotFive', function (req, res, next) {
     }
     //  console.log(weekAgo);
 
-    var query = "SELECT TOP 5 * FROM products  WHERE MONTH(AdeedOn) >= " + weekAgo.getMonth() + " AND DAY(AdeedOn) >= " + weekAgo.getDate() + " ORDER BY salesNumber DESC";
+    var query = "SELECT TOP 5 * FROM products  WHERE MONTH(AdeedOn) >= " + weekAgo.getMonth() + " AND DAY(AdeedOn) >= " + weekAgo.getDate() + " OR  MONTH(AdeedOn) > " + weekAgo.getMonth() + " ORDER BY salesNumber DESC";
     //  console.log(query);
     db.Select(query).then(function (ans) {
         console.log(query);
         if (ans.length == 0) {
-            var ans ={
-                ans : "false"
+            var ans = {
+                ans: "false"
             }
             res.send(ans);
         }
@@ -44,8 +44,10 @@ router.get('/HotFive', function (req, res, next) {
 
     })
         .catch(function (ans) {
-            res.send(false);
+            res.status(403).send(false);
         })
+
+
 });
 
 //return new items from last month
@@ -121,12 +123,15 @@ router.get('/recommendedItemsForUser/AddMoreRecommendedItemsByCategory', functio
         .catch(function (ans) {
             res.send(false);
         })
+
 });
 
 
 //check if the category and user already exist
 //checked
 router.get('/SetFavoriteCategory/CheckExistCategoryId', function (req, res) {
+
+
     var cat = req.query.categoryId;
     var user = req.query.userName;
     var query1 = "SELECT * FROM user_categories WHERE categoryId = " + cat + " AND userName = '" + user + "'";
@@ -146,6 +151,7 @@ router.get('/SetFavoriteCategory/CheckExistCategoryId', function (req, res) {
 });
 //checked
 router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
+
     var cat = req.body.categoryId;
     var user = req.body.userName;
 
@@ -153,18 +159,7 @@ router.post('/SetFavoriteCategory/AddNewCategory', function (req, res) {
     console.log(query);
     db.Insert(query);
     res.send(true);
-
-
 });
-
-router.get('/GetAllItems' , function (req,res) {
-    var query = "SELECT * from products";
-    db.Select(query).then(function (ans) {
-        res.send(ans);
-    });
-
-});
-
 
 
 //return all items by some categorey
@@ -246,19 +241,30 @@ router.get('/ItemsSortBy', function (req, res) {
 //counsme that amountInInventory is update every week and it has a high amount of per item
 //checked
 router.post('/addItemToCart', function (req, res) {
+
+
     var productId = req.body.productId;
     var cartId = req.body.cartId;
     var AmountOfTheSameItem = req.body.AmountOfTheSameItem;
-    var Name = req.body.ItemName;
-    var Size = req.body.ItemSize;
-    var Color = req.body.ItemColor;
-    console.log(productId);
     if (productId != null) {
         var query2 = "SELECT * FROM products WHERE productId = '" + productId + "'";
+
+        console.log("*********");
+        console.log(query2);
+        console.log("*********");
+
         db.Select(query2).then(function (ans) {
             var price = ans[0].price;
             var totalSum = price * AmountOfTheSameItem;
-            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + AmountOfTheSameItem + "','" + totalSum + "' ,'" + Name + "','" +Size+ "','" + Color + "')";
+            var productName=ans[0].name;
+            var productSize= ans[0].size.trim();
+            var productColor=ans[0].color.trim();
+            var query3 = "INSERT INTO cart VALUES( '" + cartId + "','" + productId + "','" + AmountOfTheSameItem + "','" + totalSum + "' ,'" + productName + "','" + productSize + "','" + productColor + "')";
+
+            console.log("*********");
+            console.log(query3);
+            console.log("*********");
+
             db.Insert(query3);
             res.send(true);
         })
@@ -278,6 +284,8 @@ router.post('/addItemToCart', function (req, res) {
 //checked
 router.get('/ViewCurrentItemsInCartWithGelobalPrice', function (req, res) {
 //return in the last cell of ans the global price
+
+
     var cartId = req.query.cartId;
 
     var query1 = "SELECT * FROM cart WHERE cartId = '" + cartId + "'";
@@ -359,11 +367,14 @@ router.post('/RemoveItemFromCart', function (req, res) {
         .catch(function (ans) {
             res.send(false);
         })
+
+
 });
 
 //checked
 router.get('/GetPreviousOrders', function (req, res) {
 //return in the last cell of ans the amount of the prev orders
+
     var userName = req.query.userName;
     var query = "SELECT * FROM order_tb WHERE userName = '" + userName + "'";
     db.Select(query).then(function (ans) {
@@ -408,6 +419,7 @@ router.get('/GetPreviousOrderDetails', function (req, res) {
 //checked
 router.get('/GetAmountOfItemInInvetory', function (req, res) {
 //return in the last cell of ans the amount of the item
+
     var productId = req.query.productId;
     var query = "SELECT * FROM products WHERE productId = '" + productId + "'";
     db.Select(query).then(function (ans) {
@@ -424,6 +436,14 @@ router.get('/GetAmountOfItemInInvetory', function (req, res) {
     }).catch(function (ans) {
         res.send(false);
     })
+
+});
+
+router.get('/GetAllItems', function (req, res) {
+    var query = "SELECT * from products";
+    db.Select(query).then(function (ans) {
+        res.send(ans);
+    });
 
 });
 
@@ -463,6 +483,7 @@ router.post('/ApproveOrder', function (req, res) {
 //checked
 router.get('/PayOrder/CheckEnoughAmountInInventory', function (req, res) {
 //return in the last cell of the ans the amount which left in inventory after the buy
+
     var cartId = req.query.cartId;
     var productId = req.query.productId;
     var currentAmountItemInCart = 0;
@@ -548,6 +569,7 @@ router.post('/PayOrder/PayCart', function (req, res) {
     var query = "UPDATE order_tb SET PaidOrNot = '" + tr + "'  WHERE orderId = '" + orderId + "' AND userName = '" + userName + "'";
     db.Insert(query);
     res.send(true);
+
 });
 
 router.post('/PayOrder/DeleteCart', function (req, res) {
@@ -558,6 +580,7 @@ router.post('/PayOrder/DeleteCart', function (req, res) {
     db.Delete(query);
     console.log("The Order Payed Succesfully");
     res.send(true);
+
 });
 
 module.exports = router;

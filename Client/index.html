@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myApp">
+<html lang="en" ng-app="myApp" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <SCRIPT SRC="./angular.js"></SCRIPT>
     <SCRIPT SRC="./angular-route.js"></SCRIPT>
     <script src="./client.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="angular-local-storage.min.js"></script>
+    <script src ="jquery-3.2.1.min.js"></script>
+    <script src="./angular-cookies.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="home/homeControler.js"></script>
+    <script src="home/HomePageController.js"></script>
     <script src="items/itemsController.js"></script>
-    <script src="login/loginControler.js"></script>
+    <script src="login/loginController.js"></script>
+    <script src="register/registerController.js"></script>
+    <script src="localStorageService/localStorageController.js"></script>
     <script src="cart/cartController.js"></script>
-
-
-
+    <script src="xml2json.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 </head>
-
-<body ng-controller="HomePageController as homePageCtrl">
-
-
-
+<body ng-controller="HomePageController as HomePageCtrl">
 
 <div class="jumbotron">
     <div class="container text-center">
@@ -45,34 +43,20 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#home">Home <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
 
-                <li><a href="#items">Items Test</a></li>
+                <li><a href="#items">Items</a></li>
                 <li><a href="#about">about</a></li>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Items Options <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#Items By Category And Recommended Items">Items By Category And Recommended Items</a></li>
-                        <li><a href="#">Items Cart</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Previous Orders</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search Item">
-                </div>
 
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
+
             <ul class="nav navbar-nav navbar-right">
-                <li><a  ng-click="MoveToPage('login')"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
-                <li><a href="#cart"><span class="glyphicon glyphicon-shopping-cart"></span> Pay Cart</a></li>
-                <li><a ><span class="glyphicon glyphicon-user"></span> Register</a></li>
+                <li><a href ng-click="HomePageCtrl.MoveToPage('login')" ng-show="!Logged" ><span class="glyphicon glyphicon-user"></span> Log In</a></li>
+                <li><a href ng-click="LogOut()" ng-show="Logged"  ><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+                <li><a href ng-click="HomePageCtrl.MoveToPage('cart')"  ng-show="Logged"  ><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                <li><a href ng-click="HomePageCtrl.MoveToPage('register')" ng-show="!Logged"  ><span class="glyphicon glyphicon-user"></span> Register</a></li>
+                <li><label ng-bind="userWelcome" >{{$scope.userWelcome}}</label></li>
             </ul>
         </div>
     </div>
@@ -80,6 +64,7 @@
 
 <div id="main">
     <!-- this is where content will be injected -->
+    <!-- the homepage controller heve attribute that if function which help to move in all pages of the home page-->
     <div ng-view></div>
 
 </div>
@@ -89,7 +74,6 @@
     <p>Copyright © 2017 Eshop Inc. All Rights Reserved to Daniel&Hen</p>
 
 </footer>
-
 
 
 </body>

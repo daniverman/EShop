@@ -11,7 +11,7 @@ var items = require('./routes/items');
 
 
 var app = express();
-
+app.locals.users = {};
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -59,5 +59,17 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
+//every user now have a new presntation!!!! (no password)
+app.checkLogin= function (req) {
+    var token = req.headers["my-token"];
+    var user = req.headers["user"];
+    if (!token || !user)
+        return false;
+    var validToken = app.locals.users[user];
+    if (validToken == token)
+        return true;
+    else
+        return false;
+};
 
 module.exports = app;

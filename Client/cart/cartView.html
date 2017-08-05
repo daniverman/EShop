@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="MyApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CartPage</title>
+    <title>Cart Page</title>
 </head>
 <body ng-controller="cartController as cartCtrl">
 <table class="table table-striped table-hover ">
@@ -47,8 +47,8 @@
     <td></td>
     <td></td>
     <td></td>
-    <td><button class="btn-default">Show previous orders </button></td>
-    <td><button class="btn-success">By All In cart</button></td>
+    <td><button class="btn-default" ng-click="previousOrder()">Show previous orders </button></td>
+    <td><button class="btn-success" ng-click="byAll()">By All In cart</button></td>
     <td></td>
     <td>*all price in ₪</td>
     </tfoot>
@@ -73,9 +73,50 @@
 
             </div>
             <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                            ng-click="cancel()">Close
-                    </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        ng-click="cancel()">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="show-modal" ng-show="showOrders">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        ng-click="closeOrders()">&times;
+                </button>
+                <h4 class="modal-title">Previous Orders </h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover ">
+                    <thead>
+                    <tr>
+                        <th>#</th> //orderId
+                        <th>Sum To Pay</th>
+                        <th>Date Of Deliver </th>
+                        <th>Paid Or Not</th>
+                        <th>Order Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="order in returnOrders">
+                        <td>{{order.orderId}}</td>
+                        <td>{{order.globalPriceToPay}}</td>
+                        <td>{{order.dateOfDeliver}}</td>
+                        <td>{{order.PaidOrNot}}</td>
+                        <td>{{order.statusOrder}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        ng-click="closeOrders()">Close
+                </button>
             </div>
         </div>
     </div>

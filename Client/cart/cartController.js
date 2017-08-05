@@ -1,25 +1,28 @@
-angular.module("myApp").controller('cartController', function ($scope, $http, $location, $log) {
+/**
+ * Created by חן קאשי on 29/06/2017.
+ */
+angular.module("myApp").controller('cartController', function ($scope, $http, $location, $log , $route ,UserService) {
 //if user is connect
-if(true) {
+    if(UserService.isLoggedIn) {
 
-    var userName = "daniverman"
-    var params = {"cartId": userName};
-    $http({
-        url: "http://localhost:3000/items/ViewCurrentItemsInCartWithGelobalPrice",
-        method: "GET",
-        params: params
-    }).then(function (response) {
-       var TotalSum = 0;
-        for(var i =0 ; i<response.data.length-1 ;i++){
-           TotalSum+= parseFloat( response.data[i].totalSum);
-           $scope.totalPrice = TotalSum;
-        }
+        var userName = UserService.userNameIsLogInNow;
+        var params = {"cartId": userName};
+        $http({
+            url: "http://localhost:3000/items/ViewCurrentItemsInCartWithGelobalPrice",
+            method: "GET",
+            params: params
+        }).then(function (response) {
+            var TotalSum = 0;
+            for(var i =0 ; i<response.data.length-1 ;i++){
+                TotalSum+= parseFloat( response.data[i].totalSum);
+                $scope.totalPrice = TotalSum;
+            }
 
 
-        $scope.returnItems = response.data;
-    });
+            $scope.returnItems = response.data;
+        });
 
-}
+    }
 
     $scope.openDialog = function (item) {
         var productId = item.productId;
@@ -37,6 +40,10 @@ if(true) {
         $scope.showModal = false;
     };
 
+    $scope.closeOrders = function () {
+        $scope.showOrders = false;
+    };
+
     $scope.RemoveCart = function (item) {
         var productId = item.productId;
         var cartId = item.cartId;
@@ -44,8 +51,27 @@ if(true) {
         var params = {"productId": productId , "cartId" : cartId, "AmountToRemoveOfTheSameItem" : AmountToRemoveOfTheSameItem};
         $http.post('http://localhost:3000/items/RemoveItemFromCart',params).then(function () {
             alert("Item Was Deleted Successfully");
-            $location.reload();
+            $route.reload();
         })
 
-    }
+    };
+    
+    $scope.byAll = function () {
+        var params = {"userName" : UserService.userNameIsLogInNow};
+        $http.post('http://localhost:3000/items/PayOrder/DeleteCart',params).then(function () {
+            alert("All Item In The Cart Was Paid");
+            $route.reload();
+
+        })
+    };
+
+    $scope.previousOrder = function () {
+        var userName = UserService.userNameIsLogInNow;
+        var params = {"cartId": userName};
+        $http.get('http://localhost:3000/items/GetPreviousOrders',params).then(function (res) {
+            $scope.returnOrders = res.data[0];
+            $scope.showOrders = true;
+        });
+
+    };
 });

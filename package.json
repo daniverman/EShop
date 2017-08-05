@@ -6,20 +6,19 @@
     "start": "node ./server/bin/www"
   },
   "dependencies": {
-    "angular": "^1.6.4",
-    "angular-cookies": "^1.6.4",
-    "angular-local-storage": "^0.6.0",
-    "angular-route": "^1.6.4",
-    "async": "^2.5.0",
     "body-parser": "~1.17.1",
-    "bootstrap": "^3.3.7",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "jade": "~1.11.0",
     "morgan": "~1.8.1",
-    "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
-    "tedious": "^2.0.0"
+    "tedious": "^2.0.0",
+    "request": "^2.81.0",
+    "bootstrap": "^3.3.7",
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4",
+    "angular-local-storage": "^0.6.0",
+    "angular-cookies": "^1.6.4"
   }
 }

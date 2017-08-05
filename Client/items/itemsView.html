@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Item Page</title>
 </head>
-<body ng-controller="itemController as itemctrl">
+<body ng-controller="itemsController as itemctrl">
 
 
 <div class="container">
@@ -74,29 +74,6 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="divider"></li>
-                    <br>
-                    <h3>Gender</h3>
-                    <label>
-                        <div class="col-lg-10">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="GenderRadios" id="optionsRadios1" value="Men"
-                                           ng-click="getItemByCategory('1')">
-                                    Men
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="GenderRadios" id="optionsRadios2" value="Women"
-                                           ng-click="getItemByCategory('2')">
-                                    Women
-                                </label>
-                            </div>
-
-                        </div>
-                    </label>
-                    </li>
                     <br>
                     <h3>Sort By</h3>
 
@@ -104,33 +81,33 @@
                         <div class="radio">
                             <label>
                                 <input type="radio" name="SortRadios" id="optionsRadios3" value="price"
-                                       ng-model="filter" checked="checked">
+                                       ng-click="sortBy('price')" >
                                 Price
                             </label>
                         </div>
                         <div class="radio">
-                            <input type="radio" name="SortRadios" id="optionsRadios4" value="size" ng-model="filter">
+                            <input type="radio" name="SortRadios" id="optionsRadios4" value="size" ng-click="sortBy('price')">
                             Size
                             </label>
                         </div>
                         <div class="radio">
                             <label>
                                 <input type="radio" name="SortRadios" id="optionsRadios5" value="AdeedOn"
-                                       ng-model="filter">
+                                       ng-click="sortBy('AdeedOn')">
                                 Date Added
                             </label>
                         </div>
                         <div class="radio">
                             <label>
                                 <input type="radio" name="SortRadios" id="optionsRadios6" value="salesNumber"
-                                       ng-model="filter">
+                                       ng-click="sortBy('salesNumber')">
                                 Sales
                             </label>
                         </div>
                         <div class="radio">
                             <label>
                                 <input type="radio" name="SortRadios" id="optionsRadios7" value="color"
-                                       ng-model="filter">
+                                       ng-click="sortBy('color')">
                                 Color
                             </label>
                         </div>

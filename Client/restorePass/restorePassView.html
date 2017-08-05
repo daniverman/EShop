@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" >
+<head>
+    <meta charset="UTF-8">
+    <title>Restore Password Page </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <SCRIPT SRC="../angular.js"></SCRIPT>
+    <SCRIPT SRC="../angular-route.js"></SCRIPT>
+    <script src="../client.js"></script>
+    <script src="restoreController.js"></script>
+    <script src="../angular-local-storage.min.js"></script>
+</head>
+<body>
+
+
+
+
+<div class="restore-container" ng-controller="restoreController as restoreCtrl">
+    <Form name="restoreForm"   class="form-horizontal">
+        <fieldset>
+            <legend><h1>Restore Password  Here</h1></legend>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> User Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="restoreCtrl.userName"
+                           ng-required="true"
+                           class="form-control"
+                           name="usernameInput"
+                           ng-minlength="3" ng-maxlength="8"     ng-pattern="/^[a-zA-Z}+$/"   placeholder="Enter Username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Address:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="restoreCtrl.Address"
+                           ng-required="true"
+                           class="form-control"
+                           name="AddressInput"
+                           placeholder="Enter Address">
+                </div>
+            </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> Telephone:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="restoreCtrl.Telephone"
+                       ng-required="true"
+                       class="form-control"
+                       name="telephoneInput"
+                       placeholder="Enter Telephone">
+            </div>
+        </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Email:</label>
+                <div class="col-lg-10">
+
+                    <input type="email"
+                           ng-model="registerCtrl.Email"
+                           ng-required="true"
+                           class="form-control"
+                           name="emailInput"
+                           placeholder="Enter Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Country:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.Country"
+                           ng-required="true"
+                           class="form-control"
+                           name="CountryInput"
+                           placeholder="Enter Country">
+                </div>
+            </div>  <div class="form-group">
+            <label class="col-lg-2 control-label"> City:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.City"
+                       ng-required="true"
+                       class="form-control"
+                       name="CityInput"
+                       placeholder="Enter City">
+            </div>
+        </div>
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit"
+                   class="btn btn-success btn-reg"
+                   value="Restore"
+                   location="center" ng-click="checkDetailsOnClick()"
+                   ng-disabled="restoreOption.$invalid">
+        </fieldset>
+    </Form>
+    <div>
+        {{restoreCtrl.errorMessage}}
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

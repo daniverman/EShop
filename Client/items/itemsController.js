@@ -1,4 +1,7 @@
-angular.module("myApp").controller('itemController', function ($scope, $http, $location, $log, getRecServes) {
+
+
+
+angular.module('myApp').controller('itemsController' , function ( $scope, $http, $location, $log ,UserService) {
     var ctrl = this;
     $scope.getItem = function () {
         var parms = {"productId": $scope.productId}
@@ -10,7 +13,12 @@ angular.module("myApp").controller('itemController', function ($scope, $http, $l
             $scope.test = response.data;
         });
     }
+    
+    $scope.sortBy = function (sortValue) {
+        $scope.filter = sortValue;
 
+    }
+    
     $scope.getItemByCategory = function (categoryId) {
         var params = {"categoryId": categoryId, "maxProductsToReturn": "10"};
         $http({
@@ -30,23 +38,21 @@ angular.module("myApp").controller('itemController', function ($scope, $http, $l
     $scope.cancel = function () {
         $scope.showModal = false;
     };
-    //not complete
+
     $scope.addItemToCart = function () {
         //adding chosen item to cart
         var item = $scope.chocsenItem;
         var amount = $scope.AmountTheUserChose;
         //need to change to real user
-        var userName = "daniverman";
+        var userName = UserService.userNameIsLogInNow;
         $scope.showModal = false;
         var chosen = $scope.chocsenItem;
-        alert(chosen.name);
-        alert(chosen.size);
-        alert(chosen.color);
+
 
         ///addItemToCart ->need user id and product id
-        var params = {"productId": chosen.productId, "cartId": userName , "AmountOfTheSameItem" : amount ,"ItemName" : chosen.name , "ItemSize" : chosen.size , "ItemColor" : chosen.color} ;
+        var params = {"productId": chosen.productId, "cartId": userName , "AmountOfTheSameItem" : amount} ;
         $http.post("http://localhost:3000/items/addItemToCart/" ,params).then(function (response) {
-            alert(response.data);
+
             if (response.data == true) {
                 var message = "" + chosen.name + "Adeed Successfuly Yuor Cart ,remminder item amount that was selcted was " + amount + ";"
                 alert(message);
@@ -56,13 +62,19 @@ angular.module("myApp").controller('itemController', function ($scope, $http, $l
         });
     };
 
-    //recommended not working
+
+
     $scope.favCat = [];
     $scope.RecItems = [];
-
     $scope.rec = function () {
-        if(true){
-            var UserName = "daniverman";
+        if(UserService.isLoggedIn){
+
+
+
+
+
+
+            var UserName = UserService.userNameIsLogInNow;
             var first_url = "http://localhost:3000/items/recommendedItemsForUser/GetUserCategories";
             var params = {"userName": UserName};
             $http({
@@ -86,39 +98,18 @@ angular.module("myApp").controller('itemController', function ($scope, $http, $l
                             }
 
                         }
+                    }).then(function () {
+                        var first_url = "http://localhost:3000/items/GetAllItems";
+                        $http({
+                            url: first_url,
+                            method: "GET",
+                        }).then(function (response) {
+                            $scope.returnItems = response.data;
+                        });
                     });
-                }
+                };
             });
         }
-    }
-
-
+    };
 
 });
-
-
-
-
-
-
-angular.module('myApp').factory('getRecServes', function () {
-    var data = "";
-    return {
-        getServes: function (parmas) {
-            alert("in serves");
-            $http({
-                url: "http://localhost:3000/items/recommendedItemsForUser/GetUserCategories",
-                method: "GET",
-                params: parmas
-            }).then(function (response) {
-                alert("sfd");
-                data = response.data;
-            })
-        },
-        getData: function () {
-            alert("get data");
-            return data;
-        }
-    }
-});
-

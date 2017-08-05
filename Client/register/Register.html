@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register Page </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <SCRIPT SRC="../angular.js"></SCRIPT>
+    <SCRIPT SRC="../angular-route.js"></SCRIPT>
+    <script src="../client.js"></script>
+    <script src="registerController.js"></script>
+    <script src="../xml2json.js"></script>
+    <script src="../angular.min.js"></script>
+    <script src="../xml2json.js"></script>
+    <script src="../angular-local-storage.min.js"></script>
+
+</head>
+
+<body>
+
+
+<div class="register-container" ng-controller="registerController as registerCtrl">
+    <Form name="regForm"   class="form-horizontal">
+        <fieldset>
+            <legend><h1>Register Here</h1></legend>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> User Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.user.userName"
+                           ng-required="true"
+                           class="form-control"
+                           name="usernameInput"
+                           ng-minlength="3" ng-maxlength="8"     ng-pattern="/^[a-zA-Z}+$/"   placeholder="Enter Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> First Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.user.firstName"
+                           ng-required="true"
+                           class="form-control"
+                           name="firstNameInput"
+                             placeholder="Enter FirstName">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Last Name:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.user.lastName"
+                           ng-required="true"
+                           class="form-control"
+                           name="lastNameInput"
+                            placeholder="Enter Last Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Address:</label>
+                <div class="col-lg-10">
+
+                    <input type="text"
+                           ng-model="registerCtrl.user.address"
+                           ng-required="true"
+                           class="form-control"
+                           name="AddressInput"
+                           placeholder="Enter Address">
+                </div>
+            </div>
+            <div class="form-group">
+            <label class="col-lg-2 control-label"> Telephone:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.user.phone"
+                       ng-required="true"
+                       class="form-control"
+                       name="telephoneInput"
+                        placeholder="Enter Telephone">
+            </div>
+        </div>
+            <div class="form-group">
+            <label class="col-lg-2 control-label"> CreditCard:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.user.creditCard"
+                       ng-required="true"
+                       class="form-control"
+                       name="creditCardInput"
+                        placeholder="Enter CreditCard"   ng-pattern="/^[0-9]+$/">
+            </div>
+        </div>
+            <div class="form-group">
+            <label class="col-lg-2 control-label"> Gender:</label>
+            <div class="col-lg-2">
+                <form action="/action_page.php">
+                    <label for="male">Male</label>
+                    <input  ng-model="registerCtrl.user.gender" type="radio" name="gender" value="male"><br>
+                    <label for="female">Female</label>
+                    <input  ng-model="registerCtrl.user.gender" type="radio" name="gender"  value="female"><br>
+                    <label for="other">Other</label>
+                    <input  ng-model="registerCtrl.user.gender" type="radio" name="gender"  value="other"><br><br>
+                </form>
+            </div>
+        </div>
+
+            <div class="form-group">
+                <label class="col-lg-2 control-label"> Email:</label>
+                <div class="col-lg-10">
+
+                    <input type="mail"
+                           ng-model="registerCtrl.user.mail"
+                           ng-required="true"
+                           class="form-control"
+                           name="mailInput"
+                            placeholder="Enter Email">
+                </div>
+            </div>
+            <div>  <label class="col-lg-2 control-label">Country:</label>
+                <p>
+                    <label  ng-repeat="det in registerCtrl.details">
+                        <input type="radio" name="Country" ng-model="registerCtrl.user.country" ng-value="det.Name"/>   &nbsp;&nbsp;&nbsp;{{det.Name}}  &nbsp;&nbsp;</label>
+                </p>
+            </div>
+            <br>
+            <br>
+            <div class="form-group">
+            <label class="col-lg-2 control-label"> City:</label>
+            <div class="col-lg-10">
+
+                <input type="text"
+                       ng-model="registerCtrl.user.city"
+                       ng-required="true"
+                       class="form-control"
+                       name="CityInput"
+                         placeholder="Enter City">
+            </div>
+        </div>
+            <div class="form-group">
+                <label  class="col-lg-2 control-label">Password:</label>
+                <div class="col-lg-10">
+                    <input type="password"
+                           ng-model="registerCtrl.user.password"
+                           ng-required="true"
+                           class="form-control"
+                           name="passwordInput"
+                           placeholder="Enter Password"
+                           ng-minlength="5" ng-maxlength="10"   >
+                </div>
+            </div>
+                <div class="form-group">
+                    <label  class="col-lg-2 control-label">category1:</label>
+                    <div class="col-lg-10">
+                        <input type="cat1"
+                               ng-model="registerCtrl.userToSaveInStorage1.categoryId"
+                               ng-required="true"
+                               class="form-control"
+                               name="FavoriteCatInput"
+                               placeholder="Enter Favorite Catagory1"
+                                  >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-lg-2 control-label">category2:</label>
+                    <div class="col-lg-10">
+                        <input type="cat2"
+                               ng-model="registerCtrl.userToSaveInStorage2.categoryId"
+                               ng-required="true"
+                               class="form-control"
+                               name="FavoriteCatInput"
+                               placeholder="Enter Favorite Catagory1"
+                                 >
+                    </div>
+                </div>
+
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="submit"
+                   class="btn btn-success btn-reg"
+                   value="Register"
+                 ng-click="checkDetailsOnClick()"
+                   ng-disabled="registerOption.$invalid"> <br><br><br><br><br><br><br><br><br><br>
+        </fieldset>
+    </Form>
+    <div>
+        {{registerCtrl.errorMessage}}
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
