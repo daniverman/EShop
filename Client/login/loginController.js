@@ -30,14 +30,6 @@ angular.module("myApp").controller('loginController', ['UserService','localStora
                 })
             }
         };
-
-
-       self.MoveToPage = function (DirectoryToMove) {
-            $location.path("/"+DirectoryToMove);
-        }
-
-
-
     }]);
 
 

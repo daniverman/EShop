@@ -1,4 +1,4 @@
-angular.module("myApp").controller('HomePageController' , function ( $http ,UserService,$scope,$location) {
+angular.module("myApp").controller('HomePageController' , function ( $http ,UserService,$scope,$route , $location) {
         var vm = this;
         vm.userService = UserService;
 
@@ -7,12 +7,14 @@ angular.module("myApp").controller('HomePageController' , function ( $http ,User
         <!---this will give use to enter to the directory of the page we want to be move to him : path is the new path - and location is the current path that update now !!! to the dirctory givien-->
         $location.path("/"+DirectoryToMove);
     }
-
     function checkForCookie() {
         var cookie = vm.userService.getCookie();
         if(cookie !=null && cookie.userName!= undefined){
             vm.userService.isLoggedIn = true;
             vm.userService.userNameIsLogInNow = cookie.userName;
+            vm.userService.LastEntry = cookie.LastEntry;
+            $scope.LastEntry = vm.userService.LastEntry;
+            vm.userService.LastEntry =  new Date().toLocaleString();
 
             //GetLastEntry & update it
            // $scope.LastEntry  = vm.userService.getLastEntry();
@@ -26,7 +28,8 @@ angular.module("myApp").controller('HomePageController' , function ( $http ,User
 
     $scope.LogOut = function () {
         vm.userService.logout();
-        $location.path("/");
+        $scope.userWelcome = "Hello Guest";
+        $route.reload();
     };
 
     $scope.Logged = false;
@@ -56,8 +59,8 @@ angular.module("myApp").controller('HomePageController' , function ( $http ,User
     if (vm.userService.isLoggedIn)
     {
         $scope.Logged = true;
-       // $scope.userWelcome = "Welcome "+ vm.userService.userNameIsLogInNow +  " Yours Last Entry Was On : " + $scope.LastEntry;
-        $scope.userWelcome = "Welcome "+ vm.userService.userNameIsLogInNow;
+        $scope.userWelcome = "Welcome "+ vm.userService.userNameIsLogInNow +  " Yours Last Entry Was On : " + $scope.LastEntry;
+       // $scope.userWelcome = "Welcome "+ vm.userService.userNameIsLogInNow;
     }
 
     else

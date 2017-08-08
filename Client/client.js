@@ -62,8 +62,9 @@ app.factory('UserService', ['$http', '$cookies', function ($http, $cookies) {
     var service = {};
     service.isLoggedIn = false;
     service.userNameIsLogInNow = '';
+    service.LastEntry ="";
 
-    service.login = function (user) {
+        service.login = function (user) {
         var parm = {"userName": user.userName, "password": user.password}
         //only in the first log in we will send to the server the pass word- but not after that
         return $http.post('http://localhost:3000/users/login/', parm).then(function (response) {
@@ -76,6 +77,7 @@ app.factory('UserService', ['$http', '$cookies', function ($http, $cookies) {
             service.userNameIsLogInNow = user.userName;
             service.isLoggedIn = true;
             service.userNewPresntaionServer = $http.defaults.headers.common;
+            service.LastEntry = new Date().toLocaleString();
 
             //cookie handle
 
@@ -86,6 +88,8 @@ app.factory('UserService', ['$http', '$cookies', function ($http, $cookies) {
             $cookies.put('username', service.userNameIsLogInNow, {'expires': expireDate});
             $cookies.put('token', token, {'expires': expireDate});
             $cookies.put('isLeftLoggedIn', true, {'expires': expireDate});
+            $cookies.put('LastEntry', service.LastEntry, {'expires': expireDate});
+
 
             return Promise.resolve(response);
 
@@ -120,6 +124,7 @@ app.factory('UserService', ['$http', '$cookies', function ($http, $cookies) {
         $cookies.remove('username');
         $cookies.remove('token');
         $cookies.remove('isLeftLoggedIn');
+        $cookies.remove('LastEntry');
 
         service.isLoggedIn = false;
         service.userNameIsLogInNow = "";
@@ -132,10 +137,12 @@ app.factory('UserService', ['$http', '$cookies', function ($http, $cookies) {
         var cookieUserName = $cookies.get('username');
         var cookieToken = $cookies.get('token');
         var cookieLog = $cookies.get('isLeftLoggedIn');
+        var LastLog = $cookies.get('LastEntry');
         var object = {
             userName : cookieUserName,
             token : cookieToken,
-            isLeftLoggedIn : cookieLog
+            isLeftLoggedIn : cookieLog,
+            LastEntry : LastLog
         };
         return object;
 
